@@ -1,0 +1,27 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+
+:root {
+  --primary-color: #DB4444;
+  --category-color: #00FF66;
+}
+
+
+.addItem-btn{
+  background-color: var(--primary-color);
+}
+
+body {
+  margin: 0;
+  font-family: jost;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
