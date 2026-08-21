@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { AlertCircle, BadgeCheck, ChevronRight, HandCoins, LoaderCircle, PackageSearch, ShoppingCart } from 'lucide-react';
 
@@ -6,21 +6,27 @@ const Sell = () => {
     const [code, setCode] = useState('');
     const [loading, setLoading] = useState(false);
     const [lookupLoading, setLookupLoading] = useState(false);
+    const [salePrice, setSalePrice] = useState('');
     const [alertMessage, setAlertMessage] = useState('');
     const [alertType, setAlertType] = useState('');
     const [soldItem, setSoldItem] = useState(null);
     const [lookupResults, setLookupResults] = useState([]);
 
     const normalizeValue = (value) => String(value ?? '').trim().toLowerCase();
+    const getDisplayPrice = (itemPrice, productPrice, fallback = '-') => {
+        const resolvedPrice = salePrice !== '' ? salePrice : itemPrice ?? productPrice;
+        return resolvedPrice ?? fallback;
+    };
 
-    const lookupProduct = async () => {
-        const trimmedCode = String(code ?? '').trim();
+    const lookupProduct = async (rawCode = code) => {
+        const trimmedCode = String(rawCode ?? '').trim();
 
         if (!trimmedCode) {
             setAlertType('error');
             setAlertMessage('Code is required.');
             setLookupResults([]);
             setSoldItem(null);
+            setSalePrice('');
             return;
         }
 
@@ -56,17 +62,21 @@ const Sell = () => {
             if (filteredResults.length === 0) {
                 setLookupResults([]);
                 setSoldItem(null);
+                setSalePrice('');
                 setAlertType('error');
                 setAlertMessage('No product found for that code.');
                 return;
             }
 
             setLookupResults(filteredResults);
+            setSoldItem(filteredResults[0] || null);
+            setSalePrice(String(filteredResults[0]?.newPrice ?? filteredResults[0]?.price ?? ''));
             setAlertType('success');
             setAlertMessage('Product found. Select one to sell.');
         } catch (error) {
             setLookupResults([]);
             setSoldItem(null);
+            setSalePrice('');
             setAlertType('error');
             setAlertMessage('Unable to check product right now.');
             console.error('Product lookup failed:', error);
@@ -74,6 +84,24 @@ const Sell = () => {
             setLookupLoading(false);
         }
     };
+
+    useEffect(() => {
+        const trimmedCode = String(code ?? '').trim();
+
+        if (!trimmedCode) {
+            setLookupResults([]);
+            setSoldItem(null);
+            setAlertMessage('');
+            setAlertType('');
+            return undefined;
+        }
+
+        const timer = setTimeout(() => {
+            lookupProduct(trimmedCode);
+        }, 350);
+
+        return () => clearTimeout(timer);
+    }, [code]);
 
     const handleSellSubmit = async (event) => {
         event.preventDefault();
@@ -84,11 +112,12 @@ const Sell = () => {
             setAlertType('error');
             setAlertMessage('Code is required.');
             setSoldItem(null);
+            setSalePrice('');
             return;
         }
 
         if (lookupResults.length === 0) {
-            await lookupProduct();
+            await lookupProduct(trimmedCode);
             return;
         }
 
@@ -99,12 +128,14 @@ const Sell = () => {
         try {
             const response = await axios.post('http://localhost:5000/posts/sell', {
                 code: trimmedCode,
+                price: salePrice === '' ? undefined : Number(salePrice),
             });
 
             const item = response?.data?.item || null;
             setSoldItem(item);
             setCode('');
             setLookupResults([]);
+            setSalePrice('');
             setAlertType('success');
             setAlertMessage(response?.data?.message || 'Product sold successfully.');
         } catch (error) {
@@ -171,6 +202,27 @@ const Sell = () => {
                     </div>
                 </label>
 
+                {lookupResults.length > 0 && (
+                    <label className="block text-sm font-medium text-slate-300">
+                        Sell price
+                        <div className="mt-2 flex overflow-hidden rounded-2xl border border-white/10 bg-slate-950/60 focus-within:border-emerald-400/40">
+                            <span className="flex items-center px-4 text-slate-500">$</span>
+                            <input
+                                type="number"
+                                min="0"
+                                step="0.01"
+                                value={salePrice}
+                                onChange={(e) => setSalePrice(e.target.value)}
+                                placeholder="Enter sell price"
+                                className="w-full bg-transparent px-2 py-3 text-sm text-white placeholder:text-slate-500 focus:outline-none"
+                            />
+                        </div>
+                        <p className="mt-2 text-xs text-slate-500">
+                            Defaults to the product&apos;s current new price, but the admin can change it before selling.
+                        </p>
+                    </label>
+                )}
+
                 {alertMessage && (
                     <div
                         className={`flex items-center gap-2 rounded-2xl border px-4 py-3 text-sm ${
@@ -198,6 +250,8 @@ const Sell = () => {
                                     type="button"
                                     onClick={() => {
                                         setCode(String(item.code ?? ''));
+                                        setSoldItem(item);
+                                        setSalePrice(String(item.newPrice ?? item.price ?? ''));
                                         setAlertType('success');
                                         setAlertMessage('Product selected. Submit to sell it.');
                                     }}
@@ -259,7 +313,7 @@ const Sell = () => {
                                 <p className="font-medium text-white">{soldItem.title || '-'}</p>
                                 <p className="text-slate-400">Code: {soldItem.code || '-'}</p>
                                 <p className="text-slate-400">Category: {soldItem.category || '-'}</p>
-                                <p className="text-emerald-200">Price: {soldItem.price ?? '-'}</p>
+                                <p className="text-emerald-200">Price: {getDisplayPrice(soldItem.newPrice, soldItem.price)}</p>
                             </div>
                         </div>
                     </div>
