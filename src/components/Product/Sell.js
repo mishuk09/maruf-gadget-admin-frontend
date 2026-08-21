@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { AlertCircle, BadgeCheck, ChevronRight, HandCoins, LoaderCircle, PackageSearch, ShoppingCart } from 'lucide-react';
+import { BadgeCheck, ChevronRight, HandCoins, LoaderCircle, ShoppingCart } from 'lucide-react';
+import Alert from '../Alert';
 
 const Sell = () => {
     const [code, setCode] = useState('');
@@ -72,7 +73,7 @@ const Sell = () => {
             setSoldItem(filteredResults[0] || null);
             setSalePrice(String(filteredResults[0]?.newPrice ?? filteredResults[0]?.price ?? ''));
             setAlertType('success');
-            setAlertMessage('Product found. Select one to sell.');
+            setAlertMessage('Product found. Submit to sell it.');
         } catch (error) {
             setLookupResults([]);
             setSoldItem(null);
@@ -184,7 +185,7 @@ const Sell = () => {
                         <button
                             type="button"
                             disabled={lookupLoading}
-                            onClick={lookupProduct}
+                            onClick={() => lookupProduct()}
                             className="inline-flex items-center gap-2 bg-cyan-500 px-4 py-3 text-sm font-medium text-slate-950 transition hover:bg-cyan-400 disabled:cursor-not-allowed disabled:bg-cyan-500/70"
                         >
                             {lookupLoading ? (
@@ -202,95 +203,7 @@ const Sell = () => {
                     </div>
                 </label>
 
-                {lookupResults.length > 0 && (
-                    <label className="block text-sm font-medium text-slate-300">
-                        Sell price
-                        <div className="mt-2 flex overflow-hidden rounded-2xl border border-white/10 bg-slate-950/60 focus-within:border-emerald-400/40">
-                            <span className="flex items-center px-4 text-slate-500">$</span>
-                            <input
-                                type="number"
-                                min="0"
-                                step="0.01"
-                                value={salePrice}
-                                onChange={(e) => setSalePrice(e.target.value)}
-                                placeholder="Enter sell price"
-                                className="w-full bg-transparent px-2 py-3 text-sm text-white placeholder:text-slate-500 focus:outline-none"
-                            />
-                        </div>
-                        <p className="mt-2 text-xs text-slate-500">
-                            Defaults to the product&apos;s current new price, but the admin can change it before selling.
-                        </p>
-                    </label>
-                )}
-
-                {alertMessage && (
-                    <div
-                        className={`flex items-center gap-2 rounded-2xl border px-4 py-3 text-sm ${
-                            alertType === 'success'
-                                ? 'border-emerald-400/20 bg-emerald-500/10 text-emerald-100'
-                                : 'border-red-400/20 bg-red-500/10 text-red-100'
-                        }`}
-                    >
-                        {alertType === 'success' ? <BadgeCheck size={16} /> : <AlertCircle size={16} />}
-                        {alertMessage}
-                    </div>
-                )}
-
-                {lookupResults.length > 0 && (
-                    <div className="rounded-2xl border border-white/10 bg-slate-950/60 p-4">
-                        <div className="flex items-center gap-2 text-cyan-200">
-                            <PackageSearch size={16} />
-                            <p className="text-sm font-medium">Matching products</p>
-                        </div>
-
-                        <div className="mt-4 space-y-3">
-                            {lookupResults.map((item, index) => (
-                                <button
-                                    key={`${item._id || item.code || index}`}
-                                    type="button"
-                                    onClick={() => {
-                                        setCode(String(item.code ?? ''));
-                                        setSoldItem(item);
-                                        setSalePrice(String(item.newPrice ?? item.price ?? ''));
-                                        setAlertType('success');
-                                        setAlertMessage('Product selected. Submit to sell it.');
-                                    }}
-                                    className="flex w-full items-center justify-between gap-4 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-left transition hover:border-emerald-400/30 hover:bg-white/10"
-                                >
-                                    <div>
-                                        <p className="font-medium text-white">{item.title || '-'}</p>
-                                        <p className="text-xs text-slate-400">{item.category || '-'} · Code: {item.code || '-'}</p>
-                                    </div>
-
-                                    <div className="text-right text-sm text-slate-300">
-                                        <p className="text-emerald-200">Stock: {item.stock ?? '-'}</p>
-                                        <p>Price: {item.newPrice ?? item.price ?? '-'}</p>
-                                    </div>
-                                </button>
-                            ))}
-                        </div>
-                    </div>
-                )}
-
-                <button
-                    type="submit"
-                    disabled={loading || lookupResults.length === 0}
-                    className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-emerald-500 px-4 py-3 text-sm font-medium text-slate-950 transition hover:bg-emerald-400 disabled:cursor-not-allowed disabled:bg-emerald-500/70"
-                >
-                    {loading ? (
-                        <>
-                            <LoaderCircle size={16} className="animate-spin" />
-                            Selling
-                        </>
-                    ) : (
-                        <>
-                            Sell selected product
-                            <ShoppingCart size={16} />
-                        </>
-                    )}
-                </button>
-
-                {soldItem && (
+  {soldItem && (
                     <div className="rounded-2xl border border-white/10 bg-slate-950/60 p-4">
                         <div className="flex items-center gap-2 text-emerald-200">
                             <BadgeCheck size={16} />
@@ -318,6 +231,52 @@ const Sell = () => {
                         </div>
                     </div>
                 )}
+
+                {lookupResults.length > 0 && (
+                    <label className="block text-sm font-medium text-slate-300">
+                        Sell price
+                        <div className="mt-2 flex overflow-hidden rounded-2xl border border-white/10 bg-slate-950/60 focus-within:border-emerald-400/40">
+                            <span className="flex items-center px-4 text-slate-500">$</span>
+                            <input
+                                type="number"
+                                min="0"
+                                step="0.01"
+                                value={salePrice}
+                                onChange={(e) => setSalePrice(e.target.value)}
+                                placeholder="Enter sell price"
+                                className="w-full bg-transparent px-2 py-3 text-sm text-white placeholder:text-slate-500 focus:outline-none"
+                            />
+                        </div>
+                        
+                    </label>
+                )}
+
+                {alertMessage && (
+                    <Alert
+                        name={alertMessage}
+                        type={alertType === 'success' ? 'success' : 'error'}
+                    />
+                )}
+
+                <button
+                    type="submit"
+                    disabled={loading || lookupResults.length === 0}
+                    className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-emerald-500 px-4 py-3 text-sm font-medium text-slate-950 transition hover:bg-emerald-400 disabled:cursor-not-allowed disabled:bg-emerald-500/70"
+                >
+                    {loading ? (
+                        <>
+                            <LoaderCircle size={16} className="animate-spin" />
+                            Selling
+                        </>
+                    ) : (
+                        <>
+                            Sell product
+                            <ShoppingCart size={16} />
+                        </>
+                    )}
+                </button>
+
+              
             </form>
         </section>
     );
