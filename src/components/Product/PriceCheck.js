@@ -7,6 +7,7 @@ const PriceCheck = () => {
     const [priceError, setPriceError] = useState('');
     const [priceLoading, setPriceLoading] = useState(false);
     const [revealedPrices, setRevealedPrices] = useState({});
+    const [sellPricePercentages, setSellPricePercentages] = useState({});
 
     const normalizeValue = (value) => String(value ?? '').trim().toLowerCase();
 
@@ -153,10 +154,11 @@ const PriceCheck = () => {
                             <p className="text-sm font-medium">Product found</p>
                         </div>
                         <div className="mt-4 overflow-hidden rounded-2xl border border-white/10">
-                            <div className="grid grid-cols-2 bg-white/5 px-4 py-3 text-xs uppercase tracking-[0.18em] text-slate-400 sm:grid-cols-[1.6fr_1fr_1fr_1fr_0.8fr]">
+                            <div className="grid grid-cols-2 bg-white/5 px-4 py-3 text-xs uppercase tracking-[0.18em] text-slate-400 sm:grid-cols-[1.6fr_1fr_1fr_1fr_1fr_0.8fr]">
                                 <div>Product</div>
                                 <div className="hidden sm:block">Code</div>
-                                <div className="text-right">Price</div>
+                                <div className="text-right">Old Price</div>
+                                <div className="text-right">New Price</div>
                                 <div className="text-right">Sell Price</div>
                                 <div className="text-right">Stock</div>
                             </div>
@@ -165,6 +167,10 @@ const PriceCheck = () => {
                                     const stockValue = getStockValue(result);
                                     const resultKey = `${result._id || result.code || result.title || index}`;
                                     const isPriceVisible = Boolean(revealedPrices[resultKey]);
+                                    const baseSellPrice = Number(result.oldPrice ?? result.price ?? result.newPrice ?? 0) || 0;
+                                    const percentageValue = Number(sellPricePercentages[resultKey] ?? 0);
+                                    const hasCustomPercentage = sellPricePercentages[resultKey] !== undefined && sellPricePercentages[resultKey] !== null && sellPricePercentages[resultKey] !== '';
+                                    const adjustedSellPrice = hasCustomPercentage ? baseSellPrice * (1 + percentageValue / 100) : 0;
 
                                     const togglePriceVisibility = () => {
                                         setRevealedPrices((prev) => ({
@@ -173,8 +179,16 @@ const PriceCheck = () => {
                                         }));
                                     };
 
+                                    const handlePercentageChange = (event) => {
+                                        const nextValue = event.target.value;
+                                        setSellPricePercentages((prev) => ({
+                                            ...prev,
+                                            [resultKey]: nextValue,
+                                        }));
+                                    };
+
                                     return (
-                                        <div key={resultKey} className="grid grid-cols-2 items-center gap-3 px-4 py-4 sm:grid-cols-[1.6fr_1fr_1fr_1fr_0.8fr]">
+                                        <div key={resultKey} className="grid grid-cols-2 items-center gap-3 px-4 py-4 sm:grid-cols-[1.6fr_1fr_1fr_1fr_1.2fr_0.8fr]">
                                             <div>
                                                 <p className="font-medium text-white">{result.title || '-'}</p>
                                                 <p className="mt-1 text-xs text-slate-400">{result.category || '-'}</p>
@@ -190,8 +204,7 @@ const PriceCheck = () => {
                                                             aria-label="Hide price"
                                                             title="Hide price"
                                                         >
-                                                            
-                                                             <EyeOff size={12} />
+                                                            <EyeOff size={12} />
                                                         </button>
                                                         <div className="flex items-center gap-1 text-sm font-medium text-cyan-200">
                                                             <IndianRupee size={14} />
@@ -214,6 +227,24 @@ const PriceCheck = () => {
                                             <div className="flex items-center justify-end gap-1 text-sm font-medium text-cyan-200">
                                                 <IndianRupee size={14} />
                                                 {result.newPrice ?? result.price ?? '-'}
+                                            </div>
+                                            <div className="flex items-center justify-end gap-2 text-sm font-medium text-cyan-200">
+                                                <div className="flex items-center gap-1">
+                                                    <IndianRupee size={14} />
+                                                    {hasCustomPercentage && Number.isFinite(adjustedSellPrice) ? adjustedSellPrice.toFixed(2) : '0.00'}
+                                                </div>
+                                                <div className="flex items-center gap-1 rounded-lg border border-white/10 bg-slate-800/80 px-2 py-1">
+                                                    <input
+                                                        type="number"
+                                                        min="-100"
+                                                        step="0.1"
+                                                        value={sellPricePercentages[resultKey] ?? 0}
+                                                        onChange={handlePercentageChange}
+                                                        className="w-12 bg-transparent text-right text-xs text-white outline-none"
+                                                        aria-label={`Percentage adjustment for ${result.title || 'product'}`}
+                                                    />
+                                                    <span className="text-[10px] uppercase tracking-[0.15em] text-slate-400">%</span>
+                                                </div>
                                             </div>
                                             <div className="text-right text-sm font-medium text-emerald-200">{stockValue}</div>
                                         </div>
