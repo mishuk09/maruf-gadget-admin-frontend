@@ -1,13 +1,19 @@
 import React, { useState } from 'react';
-import { Search, ChevronRight, PackageSearch, IndianRupee, AlertCircle, LoaderCircle } from 'lucide-react';
+import { Search, ChevronRight, PackageSearch, IndianRupee, AlertCircle, LoaderCircle, Eye, EyeOff } from 'lucide-react';
 
 const PriceCheck = () => {
     const [priceQuery, setPriceQuery] = useState('');
     const [priceResults, setPriceResults] = useState([]);
     const [priceError, setPriceError] = useState('');
     const [priceLoading, setPriceLoading] = useState(false);
+    const [revealedPrices, setRevealedPrices] = useState({});
 
     const normalizeValue = (value) => String(value ?? '').trim().toLowerCase();
+
+    const getStockValue = (result) => {
+        const stockValue = result?.stock ?? result?.quantity ?? result?.inStock ?? result?.availableStock ?? result?.stockCount;
+        return stockValue === undefined || stockValue === null || stockValue === '' ? '0' : stockValue;
+    };
 
     const filterPriceResults = (results, query) => {
         const normalizedQuery = normalizeValue(query);
@@ -147,25 +153,72 @@ const PriceCheck = () => {
                             <p className="text-sm font-medium">Product found</p>
                         </div>
                         <div className="mt-4 overflow-hidden rounded-2xl border border-white/10">
-                            <div className="grid grid-cols-2 bg-white/5 px-4 py-3 text-xs uppercase tracking-[0.18em] text-slate-400 sm:grid-cols-[1.6fr_1fr_1fr]">
+                            <div className="grid grid-cols-2 bg-white/5 px-4 py-3 text-xs uppercase tracking-[0.18em] text-slate-400 sm:grid-cols-[1.6fr_1fr_1fr_1fr_0.8fr]">
                                 <div>Product</div>
                                 <div className="hidden sm:block">Code</div>
                                 <div className="text-right">Price</div>
+                                <div className="text-right">Sell Price</div>
+                                <div className="text-right">Stock</div>
                             </div>
                             <div className="divide-y divide-white/10">
-                                {priceResults.map((result, index) => (
-                                    <div key={`${result._id || result.code || index}`} className="grid grid-cols-2 items-center gap-3 px-4 py-4 sm:grid-cols-[1.6fr_1fr_1fr]">
-                                        <div>
-                                            <p className="font-medium text-white">{result.title || '-'}</p>
-                                            <p className="mt-1 text-xs text-slate-400">{result.category || '-'}</p>
+                                {priceResults.map((result, index) => {
+                                    const stockValue = getStockValue(result);
+                                    const resultKey = `${result._id || result.code || result.title || index}`;
+                                    const isPriceVisible = Boolean(revealedPrices[resultKey]);
+
+                                    const togglePriceVisibility = () => {
+                                        setRevealedPrices((prev) => ({
+                                            ...prev,
+                                            [resultKey]: !prev[resultKey],
+                                        }));
+                                    };
+
+                                    return (
+                                        <div key={resultKey} className="grid grid-cols-2 items-center gap-3 px-4 py-4 sm:grid-cols-[1.6fr_1fr_1fr_1fr_0.8fr]">
+                                            <div>
+                                                <p className="font-medium text-white">{result.title || '-'}</p>
+                                                <p className="mt-1 text-xs text-slate-400">{result.category || '-'}</p>
+                                            </div>
+                                            <div className="hidden text-sm text-slate-300 sm:block">{result.code || '-'}</div>
+                                            <div className="flex items-center justify-end">
+                                                {isPriceVisible ? (
+                                                    <div className="flex items-center gap-2">
+                                                        <button
+                                                            type="button"
+                                                            onClick={togglePriceVisibility}
+                                                            className="rounded-full border border-cyan-400/30 bg-cyan-500/10 p-1.5 text-cyan-200 transition hover:bg-cyan-500/20"
+                                                            aria-label="Hide price"
+                                                            title="Hide price"
+                                                        >
+                                                            
+                                                             <EyeOff size={12} />
+                                                        </button>
+                                                        <div className="flex items-center gap-1 text-sm font-medium text-cyan-200">
+                                                            <IndianRupee size={14} />
+                                                            {result.oldPrice ?? result.price ?? '-'}
+                                                        </div>
+                                                    </div>
+                                                ) : (
+                                                    <button
+                                                        type="button"
+                                                        onClick={togglePriceVisibility}
+                                                        className="inline-flex items-center gap-1 rounded-full border border-cyan-400/30 bg-cyan-500/10 px-2.5 py-1 text-[11px] font-medium uppercase tracking-[0.15em] text-cyan-200 transition hover:bg-cyan-500/20"
+                                                        aria-label="Show price"
+                                                        title="Show price"
+                                                    >
+                                                        <Eye size={14} />
+                                                        Show
+                                                    </button>
+                                                )}
+                                            </div>
+                                            <div className="flex items-center justify-end gap-1 text-sm font-medium text-cyan-200">
+                                                <IndianRupee size={14} />
+                                                {result.newPrice ?? result.price ?? '-'}
+                                            </div>
+                                            <div className="text-right text-sm font-medium text-emerald-200">{stockValue}</div>
                                         </div>
-                                        <div className="hidden text-sm text-slate-300 sm:block">{result.code || '-'}</div>
-                                        <div className="flex items-center justify-end gap-1 text-sm font-medium text-cyan-200">
-                                            <IndianRupee size={14} />
-                                            {result.newPrice ?? result.price ?? '-'}
-                                        </div>
-                                    </div>
-                                ))}
+                                    );
+                                })}
                             </div>
                         </div>
                     </div>
