@@ -27,6 +27,13 @@ const AddPost = ({ onClose, onAdd }) => {
         setImages(files);
     };
 
+    const parseCommaSeparatedValues = (value) => {
+        return value
+            .split(',')
+            .map(item => item.trim())
+            .filter(Boolean);
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
@@ -40,25 +47,16 @@ const AddPost = ({ onClose, onAdd }) => {
         formData.append('oldPrice', oldPrice);
         formData.append('stock', stock);
 
-        if (color.trim()) {
-            formData.append('color', color);
-        }
+        const selectedColors = parseCommaSeparatedValues(color);
+        selectedColors.forEach(selectedColor => formData.append('color[]', selectedColor));
 
-        if (size.trim()) {
-            formData.append('size', size);
-        }
+        const selectedSizes = parseCommaSeparatedValues(size);
+        selectedSizes.forEach(selectedSize => formData.append('size[]', selectedSize));
 
-        // formData.append('title', title);
-        // formData.append('newPrice', newPrice);
-        // formData.append('oldPrice', oldPrice);
-        // formData.append('stock', stock);
-        // color.forEach(c => formData.append('color[]', c));
-        // size.forEach(s => formData.append('size[]', s));
         formData.append('description', description);
 
         try {
             const res = await axios.post('http://localhost:5000/posts/add', formData, {
-                headers: { 'Content-Type': 'multipart/form-data' },
             });
 
             // Reset fields
@@ -86,7 +84,7 @@ const AddPost = ({ onClose, onAdd }) => {
             onAdd();
             setTimeout(() => setSuccessMessage(false), 3000);
         } catch (err) {
-            console.error(err);
+            console.error('Failed to add post:', err.response?.data || err.message || err);
         } finally {
             setLoading(false);  // Stop loading once the request completes
         }

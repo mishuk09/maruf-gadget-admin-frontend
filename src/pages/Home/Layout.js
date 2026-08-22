@@ -79,7 +79,7 @@ export default function Layout() {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 p-6 md:ml-[250px]">
+      <main className="flex-1   md:ml-[250px]">
         <Outlet />
       </main>
     </div>

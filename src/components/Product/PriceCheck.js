@@ -1,5 +1,15 @@
 import React, { useState } from 'react';
-import { Search, ChevronRight, PackageSearch, IndianRupee, AlertCircle, LoaderCircle, Eye, EyeOff } from 'lucide-react';
+import { Search, ChevronRight, PackageSearch, AlertCircle, LoaderCircle, Eye, EyeOff, Hash, CircleDollarSign, Percent, Boxes } from 'lucide-react';
+
+const getCurrencySymbol = () => {
+    if (typeof document === 'undefined') {
+        return '৳';
+    }
+
+    const tester = document.createElement('span');
+    tester.textContent = '৳';
+    return tester.textContent === '৳' ? '৳' : '$';
+};
 
 const PriceCheck = () => {
     const [priceQuery, setPriceQuery] = useState('');
@@ -97,33 +107,33 @@ const PriceCheck = () => {
     };
 
     return (
-        <section className="rounded-3xl border border-cyan-400/15 bg-slate-900/80 p-6 shadow-lg shadow-cyan-950/20 backdrop-blur">
+        <section className="rounded-lg border border-cyan-400/15 bg-slate-900/80 p-2 sm:p-6 shadow-lg shadow-cyan-950/20 backdrop-blur">
             <div className="flex items-center gap-3">
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-cyan-500/15 text-cyan-300">
-                    <Search size={20} />
+                <div className="flex h-8 w-8 sm:h-12 sm:w-12 items-center justify-center rounded-2xl bg-cyan-500/15 text-cyan-300">
+                    <Search size={14} />
                 </div>
                 <div>
-                    <h2 className="text-xl font-semibold text-white">Price Check</h2>
-                    <p className="text-sm text-slate-400">Search a product, code, or category before selling.</p>
+                    <h2 className="text-sm sm:text-xl font-semibold text-white">Price Check</h2>
+                    <p className="hidden sm:block text-sm text-slate-400">Search a product, code, or category before selling.</p>
                 </div>
             </div>
 
             <form onSubmit={(event) => event.preventDefault()} className="mt-6 space-y-4">
-                <label className="block text-sm font-medium text-slate-300">
+                <label className="block text-sm font-medium text-start text-slate-300">
                     Search item
-                    <div className="mt-2 flex overflow-hidden rounded-2xl border border-white/10 bg-slate-950/60 focus-within:border-cyan-400/40">
+                    <div className="mt-2 flex flex-col sm:flex-row overflow-hidden rounded-lg border border-white/10 bg-slate-950/60 focus-within:border-cyan-400/40">
                         <input
                             type="text"
                             value={priceQuery}
                             onChange={handlePriceChange}
-                            placeholder="Search by product name or code"
-                            className="w-full bg-transparent px-4 py-3 text-sm text-white placeholder:text-slate-500 focus:outline-none"
+                            placeholder="Search by product code"
+                            className="w-full bg-transparent px-4 py-3   text-sm text-white placeholder:text-slate-500 focus:outline-none"
                         />
                         <button
                             type="button"
                             disabled={priceLoading}
                             onClick={() => handlePriceCheck(priceQuery)}
-                            className="inline-flex items-center gap-2 bg-cyan-500 px-4 py-3 text-sm font-medium text-slate-950 transition hover:bg-cyan-400 disabled:cursor-not-allowed disabled:opacity-70"
+                            className="inline-flex  items-center gap-2 bg-cyan-500 px-4 py-3 text-sm font-medium text-slate-950 transition hover:bg-cyan-400 disabled:cursor-not-allowed disabled:opacity-70 mt-2 sm:mt-0 sm:ml-2 w-full sm:w-auto justify-center"
                         >
                             {priceLoading ? (
                                 <>
@@ -147,14 +157,14 @@ const PriceCheck = () => {
                     </div>
                 )}
 
-                {priceResults.length > 0 && (
-                    <div className="rounded-2xl border border-white/10 bg-slate-950/60 p-4">
-                        <div className="flex items-center gap-2 text-cyan-200">
+                    {priceResults.length > 0 && (
+                        <div className="rounded-lg     sm:p-4 overflow-x-auto">
+                        <div className="hidden items-center gap-2 text-cyan-200 sm:flex">
                             <PackageSearch size={16} />
                             <p className="text-sm font-medium">Product found</p>
                         </div>
-                        <div className="mt-4 overflow-hidden rounded-2xl border border-white/10">
-                            <div className="grid grid-cols-2 bg-white/5 px-4 py-3 text-xs uppercase tracking-[0.18em] text-slate-400 sm:grid-cols-[1.6fr_1fr_1fr_1fr_1fr_0.8fr]">
+                        <div className=" md:mt-4 overflow-hidden rounded-lg  ">
+                            <div className="hidden md:grid grid-cols-1 sm:grid-cols-[1.6fr_1fr_1fr_1fr_1fr_0.8fr] bg-white/5 px-4 py-3 text-xs uppercase tracking-[0.18em] text-slate-400">
                                 <div>Product</div>
                                 <div className="hidden sm:block">Code</div>
                                 <div className="text-right">Old Price</div>
@@ -187,66 +197,183 @@ const PriceCheck = () => {
                                         }));
                                     };
 
+                                    const productImage = result?.img || result?.image || result?.thumbnail || result?.photo || '';
+
                                     return (
-                                        <div key={resultKey} className="grid grid-cols-2 items-center gap-3 px-4 py-4 sm:grid-cols-[1.6fr_1fr_1fr_1fr_1.2fr_0.8fr]">
-                                            <div>
-                                                <p className="font-medium text-white">{result.title || '-'}</p>
-                                                <p className="mt-1 text-xs text-slate-400">{result.category || '-'}</p>
+                                        <div key={resultKey}>
+                                            <div className="grid gap-3   sm:px-4   sm:py-4 sm:hidden">
+                                                <div className="overflow-hidden rounded-lg border border-white/10 bg-slate-950/70 shadow-lg shadow-black/20">
+                                                    {productImage ? (
+                                                        <img
+                                                            src={productImage}
+                                                            alt={result.title || 'Product'}
+                                                            className="h-44 w-full object-cover"
+                                                        />
+                                                    ) : (
+                                                        <div className="flex h-44 w-full items-center justify-center bg-white/5 text-slate-500">
+                                                            <PackageSearch size={28} />
+                                                        </div>
+                                                    )}
+                                                </div>
+
+                                                <div className="rounded-xl border border-white/10 bg-slate-950/60 p-3 text-sm shadow-[0_10px_30px_rgba(2,6,23,0.25)]">
+                                                    <div className="flex items-start gap-3">
+                                                        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-cyan-500/15 text-cyan-300">
+                                                            <PackageSearch size={16} />
+                                                        </div>
+                                                        <div className="min-w-0 flex-1 space-y-1">
+                                                            <p className="truncate text-base font-semibold text-white">{result.title || '-'}</p>
+                                                            <p className="truncate text-xs text-slate-400">{result.category || '-'}</p>
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="mt-4 space-y-2.5">
+                                                        <div className="flex items-center justify-between rounded-lg bg-white/5 px-3 py-2.5">
+                                                            <div className="flex items-center gap-2 text-slate-400">
+                                                                <Hash size={13} />
+                                                                <span>Code</span>
+                                                            </div>
+                                                            <span className="text-sm text-slate-200">{result.code || '-'}</span>
+                                                        </div>
+
+                                                        <div className="flex items-center justify-between rounded-lg bg-white/5 px-3 py-2.5">
+                                                            <div className="flex items-center gap-2 text-slate-400">
+                                                                <CircleDollarSign size={13} />
+                                                                <span>Old Price</span>
+                                                            </div>
+                                                            {isPriceVisible ? (
+                                                                <button
+                                                                    type="button"
+                                                                    onClick={togglePriceVisibility}
+                                                                    className="inline-flex items-center gap-1 rounded-full border border-cyan-400/30 bg-cyan-500/10 px-2 py-1 text-[11px] font-medium text-cyan-200"
+                                                                    aria-label="Hide price"
+                                                                    title="Hide price"
+                                                                >
+                                                                    <EyeOff size={12} />
+                                                                    {getCurrencySymbol()} {result.oldPrice ?? result.price ?? '-'}
+                                                                </button>
+                                                            ) : (
+                                                                <button
+                                                                    type="button"
+                                                                    onClick={togglePriceVisibility}
+                                                                    className="inline-flex items-center gap-1 rounded-full border border-cyan-400/30 bg-cyan-500/10 px-2 py-1 text-[11px] font-medium text-cyan-200"
+                                                                    aria-label="Show price"
+                                                                    title="Show price"
+                                                                >
+                                                                    <Eye size={12} />
+                                                                    Show
+                                                                </button>
+                                                            )}
+                                                        </div>
+
+                                                        <div className="flex items-center justify-between rounded-lg bg-white/5 px-3 py-2.5">
+                                                            <div className="flex items-center gap-2 text-slate-400">
+                                                                <CircleDollarSign size={13} />
+                                                                <span>New Price</span>
+                                                            </div>
+                                                            <span className="text-sm font-medium text-cyan-200">
+                                                                {getCurrencySymbol()} {result.newPrice ?? result.price ?? '-'}
+                                                            </span>
+                                                        </div>
+
+                                                        <div className="flex items-center justify-between rounded-lg bg-white/5 px-3 py-2.5">
+                                                            <div className="flex items-center gap-2 text-slate-400">
+                                                                <Percent size={13} />
+                                                                <span>Sell Price</span>
+                                                            </div>
+                                                            <span className="text-sm font-medium text-cyan-200">
+                                                                {hasCustomPercentage && Number.isFinite(adjustedSellPrice) ? adjustedSellPrice.toFixed(2) : '0.00'}
+                                                            </span>
+                                                        </div>
+
+                                                        <div className="flex items-center justify-between rounded-lg bg-white/5 px-3 py-2.5">
+                                                            <div className="flex items-center gap-2 text-slate-400">
+                                                                <Boxes size={13} />
+                                                                <span>Stock</span>
+                                                            </div>
+                                                            <span className="text-sm font-medium text-emerald-200">{stockValue}</span>
+                                                        </div>
+
+                                                        <div className="flex items-center gap-2 rounded-lg border border-white/10 bg-slate-800/80 px-3 py-2.5">
+                                                            <div className="flex items-center gap-2 text-slate-400">
+                                                                <Percent size={13} />
+                                                                <span className="text-xs">Adjustment</span>
+                                                            </div>
+                                                            <input
+                                                                type="number"
+                                                                min="-100"
+                                                                step="0.1"
+                                                                value={sellPricePercentages[resultKey] ?? 0}
+                                                                onChange={handlePercentageChange}
+                                                                className="ml-auto w-16 bg-transparent text-right text-xs text-white outline-none"
+                                                                aria-label={`Percentage adjustment for ${result.title || 'product'}`}
+                                                            />
+                                                            <span className="text-[10px] uppercase tracking-[0.15em] text-slate-400">%</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div className="hidden text-sm text-slate-300 sm:block">{result.code || '-'}</div>
-                                            <div className="flex items-center justify-end">
-                                                {isPriceVisible ? (
-                                                    <div className="flex items-center gap-2">
+
+                                            <div className="hidden grid-cols-1 items-center gap-3 px-4 py-4 sm:grid sm:grid-cols-2 lg:grid-cols-[1.6fr_1fr_1fr_1fr_1.2fr_0.8fr]">
+                                                <div>
+                                                    <p className="font-medium text-white">{result.title || '-'}</p>
+                                                    <p className="mt-1 text-xs text-slate-400">{result.category || '-'}</p>
+                                                </div>
+                                                <div className="hidden text-sm text-slate-300 sm:block">{result.code || '-'}</div>
+                                                <div className="flex items-center justify-end">
+                                                    {isPriceVisible ? (
+                                                        <div className="flex items-center gap-2">
+                                                            <button
+                                                                type="button"
+                                                                onClick={togglePriceVisibility}
+                                                                className="rounded-full border border-cyan-400/30 bg-cyan-500/10 p-1.5 text-cyan-200 transition hover:bg-cyan-500/20"
+                                                                aria-label="Hide price"
+                                                                title="Hide price"
+                                                            >
+                                                                <EyeOff size={12} />
+                                                            </button>
+                                                            <div className="flex items-center gap-1 text-sm font-medium text-cyan-200">
+                                                                <span aria-label="Bangladeshi Taka" title="Bangladeshi Taka">{getCurrencySymbol()}</span>
+                                                                {result.oldPrice ?? result.price ?? '-'}
+                                                            </div>
+                                                        </div>
+                                                    ) : (
                                                         <button
                                                             type="button"
                                                             onClick={togglePriceVisibility}
-                                                            className="rounded-full border border-cyan-400/30 bg-cyan-500/10 p-1.5 text-cyan-200 transition hover:bg-cyan-500/20"
-                                                            aria-label="Hide price"
-                                                            title="Hide price"
+                                                            className="inline-flex items-center gap-1 rounded-full border border-cyan-400/30 bg-cyan-500/10 px-2.5 py-1 text-[11px] font-medium uppercase tracking-[0.15em] text-cyan-200 transition hover:bg-cyan-500/20"
+                                                            aria-label="Show price"
+                                                            title="Show price"
                                                         >
-                                                            <EyeOff size={12} />
+                                                            <Eye size={14} />
+                                                            Show
                                                         </button>
-                                                        <div className="flex items-center gap-1 text-sm font-medium text-cyan-200">
-                                                            <IndianRupee size={14} />
-                                                            {result.oldPrice ?? result.price ?? '-'}
-                                                        </div>
+                                                    )}
+                                                </div>
+                                                <div className="flex items-center justify-end gap-1 text-sm font-medium text-cyan-200">
+                                                    <span aria-label="Bangladeshi Taka" title="Bangladeshi Taka">{getCurrencySymbol()}</span>
+                                                    {result.newPrice ?? result.price ?? '-'}
+                                                </div>
+                                                <div className="flex items-center justify-end gap-2 text-sm font-medium text-cyan-200">
+                                                    <div className="flex items-center gap-1">
+                                                        <span aria-label="Bangladeshi Taka" title="Bangladeshi Taka">{getCurrencySymbol()}</span>
+                                                        {hasCustomPercentage && Number.isFinite(adjustedSellPrice) ? adjustedSellPrice.toFixed(2) : '0.00'}
                                                     </div>
-                                                ) : (
-                                                    <button
-                                                        type="button"
-                                                        onClick={togglePriceVisibility}
-                                                        className="inline-flex items-center gap-1 rounded-full border border-cyan-400/30 bg-cyan-500/10 px-2.5 py-1 text-[11px] font-medium uppercase tracking-[0.15em] text-cyan-200 transition hover:bg-cyan-500/20"
-                                                        aria-label="Show price"
-                                                        title="Show price"
-                                                    >
-                                                        <Eye size={14} />
-                                                        Show
-                                                    </button>
-                                                )}
-                                            </div>
-                                            <div className="flex items-center justify-end gap-1 text-sm font-medium text-cyan-200">
-                                                <IndianRupee size={14} />
-                                                {result.newPrice ?? result.price ?? '-'}
-                                            </div>
-                                            <div className="flex items-center justify-end gap-2 text-sm font-medium text-cyan-200">
-                                                <div className="flex items-center gap-1">
-                                                    <IndianRupee size={14} />
-                                                    {hasCustomPercentage && Number.isFinite(adjustedSellPrice) ? adjustedSellPrice.toFixed(2) : '0.00'}
+                                                    <div className="flex items-center gap-1 rounded-lg border border-white/10 bg-slate-800/80 px-2 py-1">
+                                                        <input
+                                                            type="number"
+                                                            min="-100"
+                                                            step="0.1"
+                                                            value={sellPricePercentages[resultKey] ?? 0}
+                                                            onChange={handlePercentageChange}
+                                                            className="w-12 bg-transparent text-right text-xs text-white outline-none"
+                                                            aria-label={`Percentage adjustment for ${result.title || 'product'}`}
+                                                        />
+                                                        <span className="text-[10px] uppercase tracking-[0.15em] text-slate-400">%</span>
+                                                    </div>
                                                 </div>
-                                                <div className="flex items-center gap-1 rounded-lg border border-white/10 bg-slate-800/80 px-2 py-1">
-                                                    <input
-                                                        type="number"
-                                                        min="-100"
-                                                        step="0.1"
-                                                        value={sellPricePercentages[resultKey] ?? 0}
-                                                        onChange={handlePercentageChange}
-                                                        className="w-12 bg-transparent text-right text-xs text-white outline-none"
-                                                        aria-label={`Percentage adjustment for ${result.title || 'product'}`}
-                                                    />
-                                                    <span className="text-[10px] uppercase tracking-[0.15em] text-slate-400">%</span>
-                                                </div>
+                                                <div className="text-right text-sm font-medium text-emerald-200">{stockValue}</div>
                                             </div>
-                                            <div className="text-right text-sm font-medium text-emerald-200">{stockValue}</div>
                                         </div>
                                     );
                                 })}
