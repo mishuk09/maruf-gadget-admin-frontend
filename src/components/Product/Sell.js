@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { BadgeCheck, ChevronRight, HandCoins, LoaderCircle, ShoppingCart } from 'lucide-react';
+import { BadgeCheck, ChevronRight, HandCoins, LoaderCircle, ShoppingCart, Hash, CircleDollarSign, Boxes, PackageSearch } from 'lucide-react';
 import Alert from '../Alert';
 
 const getCurrencySymbol = () => {
@@ -189,34 +189,35 @@ const Sell = () => {
                         type={alertType === 'success' ? 'success' : 'error'}
                     />
                 )}
-        <section className="rounded-lg border border-emerald-400/15 bg-slate-900/80 p-6 shadow-lg shadow-emerald-950/20 backdrop-blur">
+        <section className="rounded-lg border border-emerald-400/15 bg-slate-900/80 p-2 shadow-lg shadow-emerald-950/20 backdrop-blur sm:p-6">
             <div className="flex items-center gap-3">
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-500/15 text-emerald-300">
-                    <HandCoins size={20} />
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500/15 text-emerald-300 sm:h-12 sm:w-12">
+                    <HandCoins size={16} className="sm:hidden" />
+                    <HandCoins size={20} className="hidden sm:block" />
                 </div>
                 <div>
-                    <h2 className="text-xl font-semibold text-white">Sell</h2>
-                    <p className="hidden sm:block text-sm text-slate-400">Enter a product code to reduce stock and save the sell record.</p>
+                    <h2 className="text-sm font-semibold text-white sm:text-xl">Sell</h2>
+                    <p className="hidden text-sm text-slate-400 sm:block">Enter a product code to reduce stock and save the sell record.</p>
                 </div>
             </div>
 
             <form onSubmit={handleSellSubmit} className="mt-6 space-y-4">
-                <label className="block text-sm font-medium text-slate-300">
+                <label className="block text-sm font-medium text-start text-slate-300">
                     Product code
-                    <div className="mt-2 flex flex-col sm:flex-row overflow-hidden rounded-lg border border-white/10 bg-slate-950/60 focus-within:border-emerald-400/40">
-                        <span className="flex items-center px-4 text-slate-500">#</span>
+                    <div className="mt-2 flex flex-col overflow-hidden rounded-lg border border-white/10 bg-slate-950/60 focus-within:border-emerald-400/40 sm:flex-row">
+                        
                         <input
                             type="text"
                             value={code}
                             onChange={(e) => setCode(e.target.value)}
                             placeholder="Enter product code"
-                            className="w-full bg-transparent px-2 py-3 text-sm text-white placeholder:text-slate-500 focus:outline-none"
+                            className="w-full bg-transparent px-4 py-3 text-sm text-white placeholder:text-slate-500 focus:outline-none sm:px-2"
                         />
                         <button
                             type="button"
                             disabled={lookupLoading}
                             onClick={() => lookupProduct()}
-                            className="inline-flex items-center gap-2 bg-cyan-500 px-4 py-3 text-sm font-medium text-slate-950 transition hover:bg-cyan-400 disabled:cursor-not-allowed disabled:bg-cyan-500/70 mt-2 sm:mt-0 sm:ml-2 w-full sm:w-auto justify-center"
+                            className="mt-2 inline-flex w-full items-center justify-center gap-2 bg-cyan-500 px-4 py-3 text-sm font-medium text-slate-950 transition hover:bg-cyan-400 disabled:cursor-not-allowed disabled:bg-cyan-500/70 sm:mt-0 sm:ml-2 sm:w-auto"
                         >
                             {lookupLoading ? (
                                 <>
@@ -234,29 +235,57 @@ const Sell = () => {
                 </label>
 
   {soldItem && (
-                    <div className="rounded-2xl border border-white/10 bg-slate-950/60 p-4">
+                    <div className="rounded-lg border border-white/10 bg-slate-950/60 p-3 sm:p-4">
                         <div className="flex items-center gap-2 text-emerald-200">
                             <BadgeCheck size={16} />
                             <p className="text-sm font-medium">Sold item</p>
                         </div>
-                        <div className="mt-4 grid gap-4 grid-cols-1 sm:grid-cols-[auto_1fr]">
-                            {soldItem.img ? (
-                                <img
-                                    src={soldItem.img}
-                                    alt={soldItem.title || 'Sold item'}
-                                    className="h-20 w-20 rounded-2xl border border-white/10 object-cover"
-                                />
-                            ) : (
-                                <div className="flex h-20 w-20 items-center justify-center rounded-2xl border border-white/10 bg-white/5 text-slate-500">
-                                    <HandCoins size={20} />
-                                </div>
-                            )}
+                        <div className="mt-4 grid gap-3 sm:grid-cols-[auto_1fr] sm:gap-4">
+                            <div className="overflow-hidden rounded-lg border border-white/10 bg-white/5">
+                                {soldItem.img ? (
+                                    <img
+                                        src={soldItem.img}
+                                        alt={soldItem.title || 'Sold item'}
+                                        className="h-44 w-full object-cover sm:h-20 sm:w-20"
+                                    />
+                                ) : (
+                                    <div className="flex h-44 w-full items-center justify-center bg-white/5 text-slate-500 sm:h-20 sm:w-20">
+                                        <PackageSearch size={20} />
+                                    </div>
+                                )}
+                            </div>
 
-                            <div className="space-y-1 text-sm">
-                                <p className="font-medium text-white">{soldItem.title || '-'}</p>
-                                <p className="text-slate-400">Code: {soldItem.code || '-'}</p>
-                                <p className="text-slate-400">Stock: {soldItem.stock || '-'}</p>
-                                <p className="text-emerald-200">Price: {formatCurrencyValue(getDisplayPrice(soldItem.newPrice, soldItem.price))}</p>
+                            <div className="grid gap-2 text-sm">
+                                <div className="rounded-lg bg-white/5 px-3 py-2.5">
+                                    <p className="truncate font-medium text-white">{soldItem.title || '-'}</p>
+                                    <p className="truncate text-xs text-slate-400">{soldItem.category || '-'}</p>
+                                </div>
+
+                                <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                                    <div className="flex items-center justify-between rounded-lg bg-white/5 px-3 py-2.5">
+                                        <div className="flex items-center gap-2 text-slate-400">
+                                            <Hash size={13} />
+                                            <span>Code</span>
+                                        </div>
+                                        <span className="text-slate-200">{soldItem.code || '-'}</span>
+                                    </div>
+
+                                    <div className="flex items-center justify-between rounded-lg bg-white/5 px-3 py-2.5">
+                                        <div className="flex items-center gap-2 text-slate-400">
+                                            <Boxes size={13} />
+                                            <span>Stock</span>
+                                        </div>
+                                        <span className="text-emerald-200">{soldItem.stock || '-'}</span>
+                                    </div>
+
+                                    <div className="flex items-center justify-between rounded-lg bg-white/5 px-3 py-2.5 sm:col-span-2">
+                                        <div className="flex items-center gap-2 text-slate-400">
+                                            <CircleDollarSign size={13} />
+                                            <span>Price</span>
+                                        </div>
+                                        <span className="text-emerald-200">{formatCurrencyValue(getDisplayPrice(soldItem.newPrice, soldItem.price))}</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

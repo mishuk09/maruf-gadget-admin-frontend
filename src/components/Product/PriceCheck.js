@@ -158,21 +158,12 @@ const PriceCheck = () => {
                 )}
 
                     {priceResults.length > 0 && (
-                        <div className="rounded-lg     sm:p-4 overflow-x-auto">
-                        <div className="hidden items-center gap-2 text-cyan-200 sm:flex">
-                            <PackageSearch size={16} />
-                            <p className="text-sm font-medium">Product found</p>
-                        </div>
-                        <div className=" md:mt-4 overflow-hidden rounded-lg  ">
-                            <div className="hidden md:grid grid-cols-1 sm:grid-cols-[1.6fr_1fr_1fr_1fr_1fr_0.8fr] bg-white/5 px-4 py-3 text-xs uppercase tracking-[0.18em] text-slate-400">
-                                <div>Product</div>
-                                <div className="hidden sm:block">Code</div>
-                                <div className="text-right">Old Price</div>
-                                <div className="text-right">New Price</div>
-                                <div className="text-right">Sell Price</div>
-                                <div className="text-right">Stock</div>
+                        <div className="rounded-lg sm:p-4">
+                            <div className="hidden items-center gap-2 text-cyan-200 sm:flex">
+                                <PackageSearch size={16} />
+                                <p className="text-sm font-medium">Product found</p>
                             </div>
-                            <div className="divide-y divide-white/10">
+                            <div className="mt-4 space-y-4">
                                 {priceResults.map((result, index) => {
                                     const stockValue = getStockValue(result);
                                     const resultKey = `${result._id || result.code || result.title || index}`;
@@ -200,8 +191,8 @@ const PriceCheck = () => {
                                     const productImage = result?.img || result?.image || result?.thumbnail || result?.photo || '';
 
                                     return (
-                                        <div key={resultKey}>
-                                            <div className="grid gap-3   sm:px-4   sm:py-4 sm:hidden">
+                                        <div key={resultKey} className="overflow-hidden rounded-lg border border-white/10 bg-slate-950/60 shadow-lg shadow-black/10">
+                                            <div className="grid gap-3 p-3 sm:p-4">
                                                 <div className="overflow-hidden rounded-lg border border-white/10 bg-slate-950/70 shadow-lg shadow-black/20">
                                                     {productImage ? (
                                                         <img
@@ -216,7 +207,7 @@ const PriceCheck = () => {
                                                     )}
                                                 </div>
 
-                                                <div className="rounded-xl border border-white/10 bg-slate-950/60 p-3 text-sm shadow-[0_10px_30px_rgba(2,6,23,0.25)]">
+                                                <div className="rounded-xl border border-white/10 bg-slate-950/60 p-3 text-sm shadow-[0_10px_30px_rgba(2,6,23,0.25)] sm:p-4">
                                                     <div className="flex items-start gap-3">
                                                         <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-cyan-500/15 text-cyan-300">
                                                             <PackageSearch size={16} />
@@ -227,7 +218,7 @@ const PriceCheck = () => {
                                                         </div>
                                                     </div>
 
-                                                    <div className="mt-4 space-y-2.5">
+                                                    <div className="mt-4 grid gap-2 sm:grid-cols-2">
                                                         <div className="flex items-center justify-between rounded-lg bg-white/5 px-3 py-2.5">
                                                             <div className="flex items-center gap-2 text-slate-400">
                                                                 <Hash size={13} />
@@ -237,6 +228,14 @@ const PriceCheck = () => {
                                                         </div>
 
                                                         <div className="flex items-center justify-between rounded-lg bg-white/5 px-3 py-2.5">
+                                                            <div className="flex items-center gap-2 text-slate-400">
+                                                                <Boxes size={13} />
+                                                                <span>Stock</span>
+                                                            </div>
+                                                            <span className="text-sm font-medium text-emerald-200">{stockValue}</span>
+                                                        </div>
+
+                                                        <div className="flex items-center justify-between rounded-lg bg-white/5 px-3 py-2.5 sm:col-span-2">
                                                             <div className="flex items-center gap-2 text-slate-400">
                                                                 <CircleDollarSign size={13} />
                                                                 <span>Old Price</span>
@@ -266,7 +265,7 @@ const PriceCheck = () => {
                                                             )}
                                                         </div>
 
-                                                        <div className="flex items-center justify-between rounded-lg bg-white/5 px-3 py-2.5">
+                                                        <div className="flex items-center justify-between rounded-lg bg-white/5 px-3 py-2.5 sm:col-span-2">
                                                             <div className="flex items-center gap-2 text-slate-400">
                                                                 <CircleDollarSign size={13} />
                                                                 <span>New Price</span>
@@ -276,7 +275,7 @@ const PriceCheck = () => {
                                                             </span>
                                                         </div>
 
-                                                        <div className="flex items-center justify-between rounded-lg bg-white/5 px-3 py-2.5">
+                                                        <div className="flex items-center justify-between rounded-lg bg-white/5 px-3 py-2.5 sm:col-span-2">
                                                             <div className="flex items-center gap-2 text-slate-400">
                                                                 <Percent size={13} />
                                                                 <span>Sell Price</span>
@@ -286,15 +285,7 @@ const PriceCheck = () => {
                                                             </span>
                                                         </div>
 
-                                                        <div className="flex items-center justify-between rounded-lg bg-white/5 px-3 py-2.5">
-                                                            <div className="flex items-center gap-2 text-slate-400">
-                                                                <Boxes size={13} />
-                                                                <span>Stock</span>
-                                                            </div>
-                                                            <span className="text-sm font-medium text-emerald-200">{stockValue}</span>
-                                                        </div>
-
-                                                        <div className="flex items-center gap-2 rounded-lg border border-white/10 bg-slate-800/80 px-3 py-2.5">
+                                                        <div className="flex items-center gap-2 rounded-lg border border-white/10 bg-slate-800/80 px-3 py-2.5 sm:col-span-2">
                                                             <div className="flex items-center gap-2 text-slate-400">
                                                                 <Percent size={13} />
                                                                 <span className="text-xs">Adjustment</span>
@@ -313,73 +304,12 @@ const PriceCheck = () => {
                                                     </div>
                                                 </div>
                                             </div>
-
-                                            <div className="hidden grid-cols-1 items-center gap-3 px-4 py-4 sm:grid sm:grid-cols-2 lg:grid-cols-[1.6fr_1fr_1fr_1fr_1.2fr_0.8fr]">
-                                                <div>
-                                                    <p className="font-medium text-white">{result.title || '-'}</p>
-                                                    <p className="mt-1 text-xs text-slate-400">{result.category || '-'}</p>
-                                                </div>
-                                                <div className="hidden text-sm text-slate-300 sm:block">{result.code || '-'}</div>
-                                                <div className="flex items-center justify-end">
-                                                    {isPriceVisible ? (
-                                                        <div className="flex items-center gap-2">
-                                                            <button
-                                                                type="button"
-                                                                onClick={togglePriceVisibility}
-                                                                className="rounded-full border border-cyan-400/30 bg-cyan-500/10 p-1.5 text-cyan-200 transition hover:bg-cyan-500/20"
-                                                                aria-label="Hide price"
-                                                                title="Hide price"
-                                                            >
-                                                                <EyeOff size={12} />
-                                                            </button>
-                                                            <div className="flex items-center gap-1 text-sm font-medium text-cyan-200">
-                                                                <span aria-label="Bangladeshi Taka" title="Bangladeshi Taka">{getCurrencySymbol()}</span>
-                                                                {result.oldPrice ?? result.price ?? '-'}
-                                                            </div>
-                                                        </div>
-                                                    ) : (
-                                                        <button
-                                                            type="button"
-                                                            onClick={togglePriceVisibility}
-                                                            className="inline-flex items-center gap-1 rounded-full border border-cyan-400/30 bg-cyan-500/10 px-2.5 py-1 text-[11px] font-medium uppercase tracking-[0.15em] text-cyan-200 transition hover:bg-cyan-500/20"
-                                                            aria-label="Show price"
-                                                            title="Show price"
-                                                        >
-                                                            <Eye size={14} />
-                                                            Show
-                                                        </button>
-                                                    )}
-                                                </div>
-                                                <div className="flex items-center justify-end gap-1 text-sm font-medium text-cyan-200">
-                                                    <span aria-label="Bangladeshi Taka" title="Bangladeshi Taka">{getCurrencySymbol()}</span>
-                                                    {result.newPrice ?? result.price ?? '-'}
-                                                </div>
-                                                <div className="flex items-center justify-end gap-2 text-sm font-medium text-cyan-200">
-                                                    <div className="flex items-center gap-1">
-                                                        <span aria-label="Bangladeshi Taka" title="Bangladeshi Taka">{getCurrencySymbol()}</span>
-                                                        {hasCustomPercentage && Number.isFinite(adjustedSellPrice) ? adjustedSellPrice.toFixed(2) : '0.00'}
-                                                    </div>
-                                                    <div className="flex items-center gap-1 rounded-lg border border-white/10 bg-slate-800/80 px-2 py-1">
-                                                        <input
-                                                            type="number"
-                                                            min="-100"
-                                                            step="0.1"
-                                                            value={sellPricePercentages[resultKey] ?? 0}
-                                                            onChange={handlePercentageChange}
-                                                            className="w-12 bg-transparent text-right text-xs text-white outline-none"
-                                                            aria-label={`Percentage adjustment for ${result.title || 'product'}`}
-                                                        />
-                                                        <span className="text-[10px] uppercase tracking-[0.15em] text-slate-400">%</span>
-                                                    </div>
-                                                </div>
-                                                <div className="text-right text-sm font-medium text-emerald-200">{stockValue}</div>
                                             </div>
-                                        </div>
-                                    );
+                                    )
                                 })}
                             </div>
                         </div>
-                    </div>
+                    
                 )}
             </form>
         </section>
