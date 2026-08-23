@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/img-redundant-alt */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import axios from 'axios';
 import JoditEditor from 'jodit-react';
 import Alert from '../Alert';
@@ -20,20 +20,53 @@ const UpdatePost = ({ id, onClose, onUpdate }) => {
     const [description, setDescription] = useState('');
     const [successfull, setSuccessfull] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [isFetching, setIsFetching] = useState(true);
+    const editor = useRef(null);
+
+    const editorConfig = useMemo(() => ({
+        readonly: false,
+        theme: 'dark',
+        toolbarButtonSize: 'small',
+        style: {
+            color: '#f8fafc',
+            backgroundColor: '#0f172a'
+        },
+        disablePlugins: ['image', 'video']
+    }), []);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
+                setIsFetching(true);
                 const token = localStorage.getItem('token');
 
-                const response = await axios.get(`http://localhost:5000/posts/update/${id}`, token ? {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
-                } : {});
+                let post = null;
 
-                const post = response.data;
-                setExistingImages(Array.isArray(post.img) ? post.img : []);
+                try {
+                    const response = await axios.get(`http://localhost:5000/posts/update/${id}`, token ? {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    } : {});
+                    post = response.data;
+                } catch (error) {
+                    if (error.response && (error.response.status === 401 || error.response.status === 403)) {
+                        window.location.href = '/signin';
+                        return;
+                    }
+
+                    const fallbackResponse = await axios.get('http://localhost:5000/posts/');
+                    post = Array.isArray(fallbackResponse.data)
+                        ? fallbackResponse.data.find(item => item._id === id || item.id === id)
+                        : null;
+                }
+
+                if (!post) {
+                    console.error('Post not found for id:', id);
+                    return;
+                }
+
+                setExistingImages(Array.isArray(post.img) ? post.img : (post.img ? [post.img] : []));
                 setCode(post.code || '');
                 setCategory(post.category || '');
                 setTitle(post.title || '');
@@ -48,6 +81,8 @@ const UpdatePost = ({ id, onClose, onUpdate }) => {
                 if (error.response && (error.response.status === 401 || error.response.status === 403)) {
                     window.location.href = '/signin';
                 }
+            } finally {
+                setIsFetching(false);
             }
         };
         fetchData();
@@ -84,12 +119,11 @@ const UpdatePost = ({ id, onClose, onUpdate }) => {
         try {
             const token = localStorage.getItem('token');
 
-            await axios.post(`http://localhost:5000/posts/update/${id}`, formData, {
-                headers: {
-                    ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
-                }
-            });
-
+          await axios.post(`http://localhost:5000/posts/update/${id}`, formData, {
+  headers: {
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+  },
+});
             setSuccessfull(true);
             onUpdate();
             setTimeout(() => {
@@ -122,121 +156,169 @@ const UpdatePost = ({ id, onClose, onUpdate }) => {
             <Alert name=' Update Successful!' />
         )}
 
-            <div className="fixed inset-0 z-20 flex items-center justify-center bg-black bg-opacity-50">
-                <div className="max-w-4xl 2xl:max-w-7xl max-h-[500px] 2xl:max-h-[600px] relative overflow-y-auto overflow-x-hidden h-auto bg-white p-4 rounded">
+            <div
+                className="fixed inset-0 bg-slate-950/70 backdrop-blur-sm"
+                onClick={onClose}
+            ></div>
 
-                    <button onClick={onClose} className='absolute top-2 right-3'><X size={18} /></button>
+            <div className="fixed inset-0 z-20 flex items-center justify-center bg-black/20 px-3">
+                <div className="max-w-4xl 2xl:max-w-7xl max-h-[500px] 2xl:max-h-[600px] relative overflow-y-auto overflow-x-hidden h-auto bg-slate-900 text-slate-100 border border-slate-700 shadow-2xl shadow-slate-950/60 p-4 rounded-lg">
 
-                    <h2 className="text-2xl text-center font-semibold mb-6">Edit Post</h2>
+                    <button onClick={onClose} className='absolute top-2 right-3 text-slate-300 hover:text-white'><X size={18} /></button>
 
-                    <div className="flex gap-2">
-                        {existingImages.map((img, index) => (
-                            <div key={index} className="relative">
-                                <img src={img} alt="Existing" className="w-14 h-14 object-cover border rounded border-gray-300" />
-                                <button
-                                    type="button"
-                                    onClick={() => handleRemoveExistingImage(index)}
-                                    className="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-1 rounded"
-                                >
-                                    x
-                                </button>
-                            </div>
-                        ))}
+                    <h2 className="text-2xl text-center font-semibold mb-6 text-white">Edit Post</h2>
 
-                        {images.map((image, index) => (
-                            <div key={`${image.name}-${index}`} className="relative">
-                                <img src={URL.createObjectURL(image)} alt="New" className="w-14 h-14 object-cover border rounded border-gray-300" />
-                                <button
-                                    type="button"
-                                    onClick={() => handleRemoveNewImage(index)}
-                                    className="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-1 rounded"
-                                >
-                                    x
-                                </button>
-                            </div>
-                        ))}
-
-                    </div>
-
-                    <form onSubmit={handleSubmit} className="space-y-4 pt-6" encType="multipart/form-data">
-                        <div className="grid lg:grid-cols-3 gap-2 lg:gap-2">
-
-                            <div>
-
-                                <label className="block text-sm font-medium text-gray-700">Images:</label>
-
-                                <input type="file" multiple onChange={handleImageChange} className="mt-1 block w-full p-1 h-8 text-xs border" />
-
-
-
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700">Category:</label>
-                                <input type="text" value={category} onChange={e => setCategory(e.target.value)} required className="mt-1 block w-full p-1 h-8 text-xs border border-gray-300 rounded" />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700">Code:</label>
-                                <input type="text" value={code} onChange={e => setCode(e.target.value)} required className="mt-1 block w-full p-1 h-8 text-xs border border-gray-300 rounded" />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700">Title:</label>
-                                <input type="text" value={title} onChange={e => setTitle(e.target.value)} required className="mt-1 block w-full p-1 h-8 text-xs border border-gray-300 rounded" />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700">New Price</label>
-                                <input type="number" value={newPrice} onChange={e => setNewPrice(e.target.value)} required className="mt-1 block w-full p-1 h-8 text-xs border border-gray-300 rounded" />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700">Old Price</label>
-                                <input type="number" value={oldPrice} onChange={e => setOldPrice(e.target.value)} required className="mt-1 block w-full p-1 h-8 text-xs border border-gray-300 rounded" />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700">Stock</label>
-                                <input type="number" value={stock} onChange={e => setStock(e.target.value)} required className="mt-1 block w-full p-1 h-8 text-xs border border-gray-300 rounded" />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700">Color</label>
-                                <input
-                                    type="text"
-                                    value={color}
-                                    onChange={e => setColor(e.target.value)}
-                                    placeholder="Comma-separated, e.g. red, blue"
-                                    className="mt-1 block w-full p-1 h-8 text-xs border border-gray-300 rounded"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700">Size</label>
-                                <input
-                                    type="text"
-                                    value={size}
-                                    onChange={e => setSize(e.target.value)}
-                                    placeholder="Comma-separated, e.g. S, M, L"
-                                    className="mt-1 block w-full p-1 h-8 text-xs border border-gray-300 rounded"
-                                />
-                            </div>
+                    {isFetching ? (
+                        <div className="flex min-h-[200px] items-center justify-center">
+                            <LoadingSpin />
                         </div>
+                    ) : (
+                        <>
+                            <div className="flex flex-wrap gap-2">
+                                {existingImages.map((img, index) => (
+                                    <div key={index} className="relative">
+                                        <img src={img} alt="Existing" className="w-14 h-14 object-cover border border-slate-600 rounded bg-slate-800" />
+                                        <button
+                                            type="button"
+                                            onClick={() => handleRemoveExistingImage(index)}
+                                            className="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-1 rounded"
+                                        >
+                                            x
+                                        </button>
+                                    </div>
+                                ))}
 
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700">Description:</label>
-                            <JoditEditor
-                                value={description}
-                                tabIndex={1}
-                                onBlur={(newContent) => setDescription(newContent)}
-                                onChange={(newContent) => { }}
-                            />
-                        </div>
+                                {images.map((image, index) => (
+                                    <div key={`${image.name}-${index}`} className="relative">
+                                        <img src={URL.createObjectURL(image)} alt="New" className="w-14 h-14 object-cover border border-slate-600 rounded bg-slate-800" />
+                                        <button
+                                            type="button"
+                                            onClick={() => handleRemoveNewImage(index)}
+                                            className="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-1 rounded"
+                                        >
+                                            x
+                                        </button>
+                                    </div>
+                                ))}
+                            </div>
 
+                            <form onSubmit={handleSubmit} className="space-y-4 pt-6" encType="multipart/form-data">
+                                <div className="grid lg:grid-cols-3 gap-2 lg:gap-4">
+                                    <div>
+                                        <label className="block text-sm font-medium text-slate-200">Images</label>
+                                        <input
+                                            type="file"
+                                            multiple
+                                            onChange={handleImageChange}
+                                            className="mt-1 block w-full p-1 h-8 text-xs text-slate-50 bg-slate-800 border border-slate-600 rounded focus:border-cyan-400 focus:outline-none"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium text-slate-200">Category</label>
+                                        <input
+                                            type="text"
+                                            value={category}
+                                            onChange={e => setCategory(e.target.value)}
+                                            required
+                                            className="mt-1 block w-full p-1 h-8 text-xs text-slate-50 bg-slate-800 border border-slate-600 rounded focus:border-cyan-400 focus:outline-none"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium text-slate-200">Code</label>
+                                        <input
+                                            type="text"
+                                            value={code}
+                                            onChange={e => setCode(e.target.value)}
+                                            required
+                                            className="mt-1 block w-full p-1 h-8 text-xs text-slate-50 bg-slate-800 border border-slate-600 rounded focus:border-cyan-400 focus:outline-none"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium text-slate-200">Title</label>
+                                        <input
+                                            type="text"
+                                            value={title}
+                                            onChange={e => setTitle(e.target.value)}
+                                            required
+                                            className="mt-1 block w-full p-1 h-8 text-xs text-slate-50 bg-slate-800 border border-slate-600 rounded focus:border-cyan-400 focus:outline-none"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium text-slate-200">New Price</label>
+                                        <input
+                                            type="number"
+                                            value={newPrice}
+                                            onChange={e => setNewPrice(e.target.value)}
+                                            required
+                                            className="mt-1 block w-full p-1 h-8 text-xs text-slate-50 bg-slate-800 border border-slate-600 rounded focus:border-cyan-400 focus:outline-none"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium text-slate-200">Old Price</label>
+                                        <input
+                                            type="number"
+                                            value={oldPrice}
+                                            onChange={e => setOldPrice(e.target.value)}
+                                            required
+                                            className="mt-1 block w-full p-1 h-8 text-xs text-slate-50 bg-slate-800 border border-slate-600 rounded focus:border-cyan-400 focus:outline-none"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium text-slate-200">Stock</label>
+                                        <input
+                                            type="number"
+                                            value={stock}
+                                            onChange={e => setStock(e.target.value)}
+                                            required
+                                            className="mt-1 block w-full p-1 h-8 text-xs text-slate-50 bg-slate-800 border border-slate-600 rounded focus:border-cyan-400 focus:outline-none"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium text-slate-200">Color</label>
+                                        <input
+                                            type="text"
+                                            value={color}
+                                            onChange={e => setColor(e.target.value)}
+                                            placeholder="Comma-separated, e.g. red, blue"
+                                            className="mt-1 block w-full p-1 h-8 text-xs text-slate-50 bg-slate-800 border border-slate-600 rounded placeholder:text-slate-400 focus:border-cyan-400 focus:outline-none"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium text-slate-200">Size</label>
+                                        <input
+                                            type="text"
+                                            value={size}
+                                            onChange={e => setSize(e.target.value)}
+                                            placeholder="Comma-separated, e.g. S, M, L"
+                                            className="mt-1 block w-full p-1 h-8 text-xs text-slate-50 bg-slate-800 border border-slate-600 rounded placeholder:text-slate-400 focus:border-cyan-400 focus:outline-none"
+                                        />
+                                    </div>
+                                </div>
 
+                                <div>
+                                    <label className="block text-sm font-medium text-slate-200 mb-2">Description</label>
+                                    <div className="overflow-hidden rounded-md border border-slate-600 bg-slate-800 text-slate-50">
+                                        <JoditEditor
+                                            ref={editor}
+                                            value={description}
+                                            tabIndex={1}
+                                            onBlur={(newContent) => setDescription(newContent)}
+                                            onChange={(newContent) => setDescription(newContent)}
+                                            config={editorConfig}
+                                        />
+                                    </div>
+                                </div>
 
-                        <button
-                            type="submit"
-                            disabled={loading}
-                            className="mt-4 h-10 w-full addItem-btn p-2    text-white rounded-md   flex items-center justify-center"
-                        >
-
-                            {loading ? <LoadingSpin /> : 'Update'}
-                        </button>
-                    </form>
+                                <button
+                                    type="submit"
+                                    disabled={loading}
+                                    className="mt-4 w-full bg-cyan-500 hover:bg-cyan-400 transition-colors p-2 h-10 text-white rounded-md flex items-center justify-center font-medium"
+                                >
+                                    {loading ? <LoadingSpin /> : 'Update'}
+                                </button>
+                            </form>
+                        </>
+                    )}
                 </div>
             </div>
         </>

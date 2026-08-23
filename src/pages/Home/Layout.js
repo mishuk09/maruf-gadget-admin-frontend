@@ -39,11 +39,11 @@ export default function Layout() {
         className={`md:hidden p-2 ${
           isOpen
             ? "bg-[#0A0F1F] text-white fixed top-2 left-2 z-50 rounded-lg"
-            : "bg-slate-200 text-slate-900 fixed top-2 left-2 z-50 rounded-lg"
+            : "bg-[var(--secondary-color)] text-[var(--font-color)] fixed top-2 left-2 z-50 rounded-lg"
         }`}
         onClick={() => setIsOpen(!isOpen)}
       >
-        {isOpen ? <X size={24} /> : <Menu size={24} />}
+        {isOpen ? <X size={16} /> : <Menu size={16} />}
       </button>
 
       {/* Sidebar */}
