@@ -43,7 +43,7 @@ const UpdatePost = ({ id, onClose, onUpdate }) => {
                 let post = null;
 
                 try {
-                    const response = await axios.get(`http://localhost:5000/posts/update/${id}`, token ? {
+                    const response = await axios.get(`https://maruf-gadget-admin-backend.onrender.com/posts/update/${id}`, token ? {
                         headers: {
                             'Authorization': `Bearer ${token}`
                         }
@@ -55,7 +55,7 @@ const UpdatePost = ({ id, onClose, onUpdate }) => {
                         return;
                     }
 
-                    const fallbackResponse = await axios.get('http://localhost:5000/posts/');
+                    const fallbackResponse = await axios.get('https://maruf-gadget-admin-backend.onrender.com/posts/');
                     post = Array.isArray(fallbackResponse.data)
                         ? fallbackResponse.data.find(item => item._id === id || item.id === id)
                         : null;
@@ -119,7 +119,7 @@ const UpdatePost = ({ id, onClose, onUpdate }) => {
         try {
             const token = localStorage.getItem('token');
 
-          await axios.post(`http://localhost:5000/posts/update/${id}`, formData, {
+          await axios.post(`https://maruf-gadget-admin-backend.onrender.com/posts/update/${id}`, formData, {
   headers: {
     ...(token ? { Authorization: `Bearer ${token}` } : {}),
   },

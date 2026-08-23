@@ -16,7 +16,7 @@ const useAuth = (apiEndpoint) => {
             }
 
             try {
-                await axios.get(`http://localhost:5000${apiEndpoint}`, {
+                await axios.get(`https://maruf-gadget-admin-backend.onrender.com${apiEndpoint}`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
 

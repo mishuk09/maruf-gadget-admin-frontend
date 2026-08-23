@@ -39,7 +39,7 @@ export default function SignUp() {
         };
 
         try {
-            const response = await axios.post('http://localhost:5000/signup', userData);
+            const response = await axios.post('https://maruf-gadget-admin-backend.onrender.com/signup', userData);
             console.log(response.data);
             setShowAlert(true);
             setAlertMessage('Register successful!');

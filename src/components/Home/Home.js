@@ -35,7 +35,7 @@ const Home = () => {
         }
 
         try {
-            const response = await fetch(`http://localhost:5000/posts/search?q=${query}`);
+            const response = await fetch(`https://maruf-gadget-admin-backend.onrender.com/posts/search?q=${query}`);
             const data = await response.json();
 
             setSearchResults([...(data.items || [])].reverse());
@@ -47,7 +47,7 @@ const Home = () => {
 
     const fetchData = async () => {
         try {
-            const response = await axios.get('http://localhost:5000/posts/');
+            const response = await axios.get('https://maruf-gadget-admin-backend.onrender.com/posts/');
             setItem([...response.data].reverse());
             setLoading(false);
         } catch (error) {

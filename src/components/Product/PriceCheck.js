@@ -60,7 +60,7 @@ const PriceCheck = () => {
         setPriceError('');
 
         try {
-            const response = await fetch(`http://localhost:5000/posts/code?q=${encodeURIComponent(query)}`);
+            const response = await fetch(`https://maruf-gadget-admin-backend.onrender.com/posts/code?q=${encodeURIComponent(query)}`);
             if (!response.ok) {
                 throw new Error(`Request failed with status ${response.status}`);
             }

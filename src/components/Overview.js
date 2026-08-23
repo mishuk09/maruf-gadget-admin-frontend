@@ -104,8 +104,8 @@ export default function Overview() {
         setLoading(true);
         setError('');
 
-        const productEndpoints = ['http://localhost:5000/posts/' ];
-        const salesEndpoints = ['http://localhost:5000/posts/sell/all' ];
+        const productEndpoints = ['https://maruf-gadget-admin-backend.onrender.com/posts/' ];
+        const salesEndpoints = ['https://maruf-gadget-admin-backend.onrender.com/posts/sell/all' ];
 
         const productRequests = await Promise.allSettled(
           productEndpoints.map((endpoint) => axios.get(endpoint))

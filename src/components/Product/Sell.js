@@ -61,7 +61,7 @@ const Sell = () => {
         setAlertType('');
 
         try {
-            const response = await axios.get(`http://localhost:5000/posts/code?q=${encodeURIComponent(trimmedCode)}`);
+            const response = await axios.get(`https://maruf-gadget-admin-backend.onrender.com/posts/code?q=${encodeURIComponent(trimmedCode)}`);
             const data = response?.data;
 
             const results = Array.isArray(data)
@@ -150,7 +150,7 @@ const Sell = () => {
         setAlertType('');
 
         try {
-            const response = await axios.post('http://localhost:5000/posts/sell', {
+            const response = await axios.post('https://maruf-gadget-admin-backend.onrender.com/posts/sell', {
                 code: trimmedCode,
                 price: salePrice === '' ? undefined : Number(salePrice),
             });
