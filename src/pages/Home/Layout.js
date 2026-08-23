@@ -8,13 +8,16 @@ import {
   Option,
   Pen,
   LayoutList,
+  Lock,
 } from "lucide-react";
 import Dashboard from "../../components/Auth/Dashboard";
 import { useState } from "react";
 import MainDashboard from "../../components/MainDashboard";
+import Overview from "../../components/Overview";
 
 const sections = [
   { id: 1, name: "Dashboard", icon: <LayoutDashboard />, path: "/", component: <MainDashboard /> },
+  { id: 1, name: "Overview", icon: <Lock />, path: "/overview", component: <Overview /> },
   { id: 1, name: "All Products", icon: <LayoutList />, path: "/home", component: <Dashboard /> },
   // { id: 3, name: "Home Hews", icon: <CirclePlus />, path: "/new" },
   // { id: 3, name: "Semi Home News", icon: <CirclePlus />, path: "/offer" },
@@ -33,7 +36,7 @@ export default function Layout() {
   };
 
   return (
-    <div className="flex h-auto overflow-x-auto min-h-screen bg-slate-50 text-slate-900">
+    <div className="flex h-auto  overflow-hidden min-h-screen bg-slate-50 text-slate-900">
       {/* Sidebar Toggle Button (Mobile) */}
       <button
         className={`md:hidden p-2 ${
@@ -80,7 +83,7 @@ export default function Layout() {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 md:ml-[250px] min-h-screen   bg-[var(--primary-color)]">
+      <main className="flex-1 min-w-0 md:ml-[250px] min-h-screen bg-[var(--primary-color)]">
         <Outlet />
       </main>
     </div>

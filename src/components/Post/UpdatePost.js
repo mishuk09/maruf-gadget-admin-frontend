@@ -162,10 +162,13 @@ const UpdatePost = ({ id, onClose, onUpdate }) => {
             ></div>
 
             <div className="fixed inset-0 z-20 flex items-center justify-center bg-black/20 px-3">
-                <div className="max-w-4xl 2xl:max-w-7xl max-h-[500px] 2xl:max-h-[600px] relative overflow-y-auto overflow-x-hidden h-auto bg-slate-900 text-slate-100 border border-slate-700 shadow-2xl shadow-slate-950/60 p-4 rounded-lg">
+                <div className="max-w-4xl 2xl:max-w-7xl max-h-[500px] 2xl:max-h-[600px] relative overflow-y-auto overflow-x-hidden h-auto bg-slate-900 text-slate-100 border border-slate-700 shadow-2xl shadow-slate-950/60 p-2 rounded-lg">
 
-                    <button onClick={onClose} className='absolute top-2 right-3 text-slate-300 hover:text-white'><X size={18} /></button>
+                
 
+ <button onClick={onClose} className='sticky top-0 ml-auto z-10 block rounded-md bg-slate-900/95 px-1 py-1 text-slate-300 hover:text-white'>
+                        <X size={18} />
+                    </button>
                     <h2 className="text-2xl text-center font-semibold mb-6 text-white">Edit Post</h2>
 
                     {isFetching ? (
@@ -243,22 +246,23 @@ const UpdatePost = ({ id, onClose, onUpdate }) => {
                                             className="mt-1 block w-full p-1 h-8 text-xs text-slate-50 bg-slate-800 border border-slate-600 rounded focus:border-cyan-400 focus:outline-none"
                                         />
                                     </div>
+                                  
                                     <div>
-                                        <label className="block text-sm font-medium text-slate-200">New Price</label>
-                                        <input
-                                            type="number"
-                                            value={newPrice}
-                                            onChange={e => setNewPrice(e.target.value)}
-                                            required
-                                            className="mt-1 block w-full p-1 h-8 text-xs text-slate-50 bg-slate-800 border border-slate-600 rounded focus:border-cyan-400 focus:outline-none"
-                                        />
-                                    </div>
-                                    <div>
-                                        <label className="block text-sm font-medium text-slate-200">Old Price</label>
+                                        <label className="block text-sm font-medium text-slate-200">Buy Price</label>
                                         <input
                                             type="number"
                                             value={oldPrice}
                                             onChange={e => setOldPrice(e.target.value)}
+                                            required
+                                            className="mt-1 block w-full p-1 h-8 text-xs text-slate-50 bg-slate-800 border border-slate-600 rounded focus:border-cyan-400 focus:outline-none"
+                                        />
+                                    </div>
+                                      <div>
+                                        <label className="block text-sm font-medium text-slate-200">Sell Price</label>
+                                        <input
+                                            type="number"
+                                            value={newPrice}
+                                            onChange={e => setNewPrice(e.target.value)}
                                             required
                                             className="mt-1 block w-full p-1 h-8 text-xs text-slate-50 bg-slate-800 border border-slate-600 rounded focus:border-cyan-400 focus:outline-none"
                                         />

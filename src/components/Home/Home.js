@@ -107,9 +107,13 @@ const Home = () => {
     };
 
     return (
-        <div className="overflow-x-auto p-10 rounded-lg  ">
+        <div className="relative overflow-hidden h-screen rounded-lg p-4 sm:p-6 lg:p-10">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.15),_transparent_40%),radial-gradient(circle_at_bottom_right,_rgba(34,197,94,0.15),_transparent_40%)]" />
+            <div className="absolute -top-40 right-10 h-96 w-96 rounded-lg bg-cyan-500/10 blur-[100px] pointer-events-none" />
+            <div className="absolute -bottom-40 left-10 h-96 w-96 rounded-lg bg-emerald-500/10 blur-[100px] pointer-events-none" />
 
-            <h1 class="text-3xl font-bold text-center text-[var(--font-color)] mt-6">👋 Welcome Admin Dashboard</h1>
+            <div className="relative z-10">
+            <h1 className="mt-6 text-center text-xl font-bold text-[var(--font-color)] md:text-3xl">👋 Welcome Admin Dashboard</h1>
 
             {
                 add && <AddPost onClose={handleAddClose} onAdd={fetchData} />
@@ -122,14 +126,15 @@ const Home = () => {
             }
 
 
-            <div className="mt-10 mb-5 flex flex-col gap-4 px-2 md:flex-row md:items-center md:justify-between ">
+            <div className="mt-10 mb-5 flex flex-col gap-4 px-1 sm:px-2 md:flex-row md:items-center md:justify-between">
                 <Items name="All Products" />
 
-                <div className="flex w-full flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-end md:w-auto">
+
+                <div className="flex w-full flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-end">
                     <button
                         type="button"
                         onClick={handleAddItem}
-                        className="inline-flex items-center justify-center gap-2 rounded-md border border-blue-600 bg-[var(--secondary-color)] px-4 py-2 text-sm font-medium text-white transition hover:bg-[var(--primary-color)]"
+                        className="inline-flex items-center justify-center gap-2 rounded-md border border-blue-600 bg-[var(--secondary-color)] px-4 py-2 text-sm font-medium text-white transition hover:bg-[var(--primary-color)] sm:w-auto"
                     >
                         <span className="text-base">➕</span>
                         <span className="text-[var(--font-color)]">Add Items</span>
@@ -158,7 +163,8 @@ const Home = () => {
             </div>
 
 
-            <table className="min-w-full border border-gray-300    table-fixed">
+           <div className="overflow-x-auto rounded-lg border border-gray-200 shadow-md">
+           <table className="max-w-auto border border-gray-300 table-fixed whitespace-nowrap">
                 <thead className="bg-sky-300 text-gray-800 font-normal">
                     <tr>
                         {['Image', 'Category', 'Code', 'Title',  'Buy Price','Sell Price', 'Stock', 'Color', 'Size', 'Edit', 'Delete'].map((header, index) => (
@@ -229,6 +235,7 @@ const Home = () => {
                 </tbody>
 
             </table>
+           </div>
 
             <div className="pagination flex text-[var(--font-color)] justify-end space-x-2 p-4">
                 <button
@@ -254,6 +261,8 @@ const Home = () => {
                 >
                     Next
                 </button>
+            </div>
+
             </div>
 
         </div>
