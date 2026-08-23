@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { Pencil, Trash } from 'lucide-react';
+import { Eye, EyeOff, Pencil, Trash } from 'lucide-react';
 import UpdatePost from "../Post/UpdatePost";
 import DeletePost from "../Post/DeletePost";
 import AddPost from "../Post/AddPost";
@@ -15,6 +15,7 @@ const Home = () => {
     const [remove, setRemove] = useState(null);
     const [loading, setLoading] = useState(true);
     const [add, setAdd] = useState(false);
+    const [revealedOldPrices, setRevealedOldPrices] = useState({});
     // Search states
     const [searchQuery, setSearchQuery] = useState("");
     const [searchResults, setSearchResults] = useState([]);
@@ -37,7 +38,7 @@ const Home = () => {
             const response = await fetch(`http://localhost:5000/posts/search?q=${query}`);
             const data = await response.json();
 
-            setSearchResults(data.items || []);
+            setSearchResults([...(data.items || [])].reverse());
         } catch (error) {
             console.error("Error fetching search results:", error);
             setSearchResults([]);
@@ -47,10 +48,8 @@ const Home = () => {
     const fetchData = async () => {
         try {
             const response = await axios.get('http://localhost:5000/posts/');
-            setItem(response.data);
+            setItem([...response.data].reverse());
             setLoading(false);
-
-
         } catch (error) {
             console.error(error)
         }
@@ -84,7 +83,12 @@ const Home = () => {
         setAdd(false)
     }
 
-
+    const toggleOldPriceVisibility = (productId) => {
+        setRevealedOldPrices((prev) => ({
+            ...prev,
+            [productId]: !prev[productId],
+        }));
+    };
 
     // const dataShow = searchQuery && searchResults.length > 0 ? searchResults : item;
 
@@ -96,10 +100,16 @@ const Home = () => {
     const handlePageChange = (pageNumber) => {
         setCurrentPage(pageNumber);
     };
-    return (
-        <div className="overflow-x-auto">
 
-            <h1 class="text-3xl font-bold text-center text-gray-800 mt-6">👋 Welcome Admin Dashboard</h1>
+    const formatPrice = (value) => {
+        const number = Number(value || 0);
+        return new Intl.NumberFormat('en-US').format(number);
+    };
+
+    return (
+        <div className="overflow-x-auto p-10 rounded-lg  ">
+
+            <h1 class="text-3xl font-bold text-center text-[var(--font-color)] mt-6">👋 Welcome Admin Dashboard</h1>
 
             {
                 add && <AddPost onClose={handleAddClose} onAdd={fetchData} />
@@ -112,54 +122,54 @@ const Home = () => {
             }
 
 
-            <div class="flex justify-between mt-10 mb-3">
-                <Items name='News' />
-                <div class="flex  mb-2">
+            <div className="mt-10 mb-5 flex flex-col gap-4 px-2 md:flex-row md:items-center md:justify-between ">
+                <Items name="All Products" />
 
-                    <div onClick={handleAddItem}
-                        class=" bg-white cursor-pointer me-2 flex text-center items-center justify-center rounded border border-1 border-blue-500 hover:ring-1 delay-100 transition hover:border-blue-600 px-2 w-[200px] py-1">
-                        <div class="flex text-center items-center justify-center">
-                            <div class="text-xs me-2">
-                                ➕
-                            </div>
-                            <div>
-                                <span class="text-gray-500">Add Items</span>
-                            </div>
-                        </div>
+                <div className="flex w-full flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-end md:w-auto">
+                    <button
+                        type="button"
+                        onClick={handleAddItem}
+                        className="inline-flex items-center justify-center gap-2 rounded-md border border-blue-600 bg-[var(--secondary-color)] px-4 py-2 text-sm font-medium text-white transition hover:bg-[var(--primary-color)]"
+                    >
+                        <span className="text-base">➕</span>
+                        <span className="text-[var(--font-color)]">Add Items</span>
+                    </button>
 
-                    </div>
-
-
-
-
-                    <div class="  w-full md:w-[350px]">
-                        <form id="searchForm" class="flex" onsubmit="return false;">
+                    <div className="w-full sm:w-[320px] md:w-[360px]">
+                        <form id="searchForm" className="flex w-full overflow-hidden rounded-md border border-blue-600 bg-[var(--secondary-color)]" onSubmit={(e) => e.preventDefault()}>
                             <input
                                 value={searchQuery}
                                 onChange={handleSearch}
-                                type="text" placeholder="Search assets..." class="border border-blue-500 rounded-l px-3 py-1 text-sm w-full focus:outline-none focus:ring-1 focus:ring-blue-500" />
-                            <button type="button" onclick="fetchSearchResults()" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-r text-sm">
+                                type="text"
+                                placeholder="Search assets..."
+                                aria-label="Search assets"
+                                className="w-full bg-transparent px-4 py-2.5 text-sm text-white placeholder:text-slate-300 outline-none"
+                            />
+                            <button
+                                type="submit"
+                                className="border-l border-blue-600 bg-blue-600 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-blue-500"
+                            >
                                 Search
                             </button>
                         </form>
-                        <div id="searchResults" class="absolute w-full bg-white shadow-md rounded mt-1 hidden z-10"></div>
+                        <div id="searchResults" className="absolute z-10 mt-1 hidden w-full max-w-[360px] rounded-md bg-white shadow-lg"></div>
                     </div>
                 </div>
             </div>
 
 
-            <table className="min-w-full border border-gray-300 table-fixed">
+            <table className="min-w-full border border-gray-300    table-fixed">
                 <thead className="bg-sky-300 text-gray-800 font-normal">
                     <tr>
-                        {['Image', 'Category', 'Code', 'Title', 'New P', 'Old P', 'Stock', 'Color', 'Size', 'Edit', 'Delete'].map((header, index) => (
-                            <th key={index} className={`px-4 py-2 ${['Title'].includes(header) ? 'w-48' : ['New P', 'Old P'].includes(header) ? 'w-28' : ['Stock'].includes(header) ? 'w-10' : ['Color', 'Size'].includes(header) ? 'w-40' : ['Edit', 'Delete'].includes(header) ? 'w-10' : 'w-24'}  ${['Image'].includes(header) ? 'text-start' : 'text-center'}`}>{header}</th>
+                        {['Image', 'Category', 'Code', 'Title',  'Buy Price','Sell Price', 'Stock', 'Color', 'Size', 'Edit', 'Delete'].map((header, index) => (
+                            <th key={index} className={`px-4 py-2 ${['Title'].includes(header) ? 'w-48' : ['Sell Price', 'Buy Price'].includes(header) ? 'w-28' : ['Stock'].includes(header) ? 'w-10' : ['Color', 'Size'].includes(header) ? 'w-40' : ['Edit', 'Delete'].includes(header) ? 'w-10' : 'w-24'}  ${['Image'].includes(header) ? 'text-start' : 'text-center'}`}>{header}</th>
                         ))}
                     </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-200 text-gray-700 text-sm">
+                <tbody className="divide-y divide-gray-600 text-[var(--font-color)] bg-[var(--secondary-color)] text-sm">
                     {loading ? (
 
-                        <tr className="min-h-[320px] w-full bg-white">
+                        <tr className="min-h-[320px] w-full bg-[var(--secondary-color)] text-[var(--font-color)]">
                             <td rowSpan="7" colSpan="10">
                                 <div className="flex items-center justify-center min-h-[350px]">
                                     <Spin />
@@ -170,12 +180,12 @@ const Home = () => {
 
                     ) : currentItems.length > 0 ? (
                         currentItems.map((product, index) => (
-                            <tr key={index} className="bg-white hover:bg-gray-50 text-sm cursor-pointer transition">
+                            <tr key={index} className="bg-transparent hover:bg-white/5 text-sm cursor-pointer transition">
                                 <td className="px-2 py-1 w-24 text-start">
                                     {
                                         Array.isArray(product.img) && product.img.length > 0 ? (
                                             product.img.slice(0, 1).map((imageUrl, index) => (
-                                                <img key={index} src={imageUrl} alt={product.title} className="w-10 h-10 object-cover rounded border" />
+                                                <img key={index} src={imageUrl} alt={product.title} className="w-10 h-10 object-cover rounded  " />
                                             ))
                                         ) : (
                                             <span>No image available</span>
@@ -186,18 +196,28 @@ const Home = () => {
 
                                 </td>
                                 <td className="px-2 py-1 w-24 text-start">{product.category}</td>
-                                <td className="px-2 py-1 w-24 text-center font-medium">{product.code}</td>
+                                <td className="px-2 py-1 w-24 text-center font-bold">{product.code}</td>
                                 <td className="px-2 py-1 w-48 text-start font-medium">{product.title}</td>
-                                <td className="px-2 py-1 w-28 text-center font-medium">${product.newPrice}</td>
-                                <td className="px-2 py-1 w-28 text-center line-through text-gray-500">${product.oldPrice}</td>
-                                <td className="px-2 py-1 w-10 text-center text-gray-500">{product.stock}</td>
+                                <td className="px-2 py-1 w-28 text-center">
+                                    <button
+                                        type="button"
+                                        onClick={() => toggleOldPriceVisibility(product._id)}
+                                        className="inline-flex items-center justify-center gap-1 rounded-full border border-sky-400/40 bg-sky-500/10 px-2 py-1 text-[11px] font-medium text-sky-200"
+                                        title={revealedOldPrices[product._id] ? 'Hide buy price' : 'Show buy price'}
+                                    >
+                                        {revealedOldPrices[product._id] ? <EyeOff size={12} /> : <Eye size={12} />}
+                                        {revealedOldPrices[product._id] ? `৳ ${formatPrice(product.oldPrice)}` : 'Show'}
+                                    </button>
+                                </td>
+                                <td className="px-2 py-1 w-28 text-center font-medium">৳ {formatPrice(product.newPrice)}</td>
+                                <td className="px-2 py-1 w-10 text-center  ">{product.stock}</td>
                                 <td className="px-2 py-1 w-40 text-center">{product.color?.join(", ") || "-"}</td>
                                 <td className="px-2 py-1 w-40 text-center">{product.size?.join(", ") || "-"}</td>
                                 <td className="px-2 py-1 w-10 text-center gap-2">
-                                    <button onClick={() => hanldleEdit(product._id)} className="bg-blue-50 hover:bg-gray-100 text-gray-400 px-4 py-2 rounded text-sm transition"><Pencil size={15} /></button>
+                                    <button onClick={() => hanldleEdit(product._id)} className="bg-[var(--primary-color)] ring-1 ring-blue-500 hover:bg-[var(--secondary-color)] text-gray-400 px-4 py-2 shadow-lg shadow-blue-500/20 rounded text-sm transition"><Pencil size={15} /></button>
                                 </td>
                                 <td className="px-2 py-1 w-10 text-center gap-2">
-                                    <button onClick={() => handleDelete(product._id)} className="bg-red-50 hover:bg-gray-100 text-red-500 px-4 py-2 rounded text-sm transition"><Trash size={15} /></button>
+                                    <button onClick={() => handleDelete(product._id)} className="bg-[var(--primary-color)] ring-1 ring-red-500 hover:bg-[var(--secondary-color)] text-red-500 px-4 py-2 rounded text-sm transition"><Trash size={15} /></button>
                                 </td>
                             </tr>
                         ))
@@ -210,7 +230,7 @@ const Home = () => {
 
             </table>
 
-            <div className="pagination flex justify-end space-x-2 p-4">
+            <div className="pagination flex text-[var(--font-color)] justify-end space-x-2 p-4">
                 <button
                     onClick={() => handlePageChange(currentPage - 1)}
                     disabled={currentPage === 1}

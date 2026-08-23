@@ -14,7 +14,7 @@ const DeletePost = ({ id, onClose, onDelete }) => {
 
     const handleDelete = () => {
         setLoading(true)
-        axios.delete(`http://localhost:5000/allnews/${id}`)
+        axios.delete(`http://localhost:5000/posts/${id}`)
             .then(() => {
                 console.log('Post deleted.');
                 setSuccess(true)

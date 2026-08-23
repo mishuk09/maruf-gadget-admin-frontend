@@ -33,7 +33,7 @@ export default function Layout() {
   };
 
   return (
-    <div className="flex h-auto overflow-x-auto min-h-screen  text-slate-100">
+    <div className="flex h-auto overflow-x-auto min-h-screen bg-slate-50 text-slate-900">
       {/* Sidebar Toggle Button (Mobile) */}
       <button
         className={`md:hidden p-2 ${
@@ -80,7 +80,7 @@ export default function Layout() {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 md:ml-[250px] min-h-screen">
+      <main className="flex-1 md:ml-[250px] min-h-screen   bg-[var(--primary-color)]">
         <Outlet />
       </main>
     </div>
