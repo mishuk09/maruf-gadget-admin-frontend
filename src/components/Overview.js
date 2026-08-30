@@ -334,15 +334,51 @@ export default function Overview() {
           <div className="rounded-3xl border p-4 shadow-sm sm:p-5 md:p-6 text-white" style={{ backgroundColor: '#0A1225', borderColor: '#1a2b4a' }}>
             <div className="flex items-center justify-between gap-2 sm:gap-3">
               <div>
-                <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-400 sm:text-xs sm:tracking-[0.2em]">Inventory health</p>
-                <h3 className="mt-1 text-lg font-bold text-white sm:mt-2 sm:text-xl">Low stock items</h3>
+                <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-400 sm:text-xs sm:tracking-[0.2em]">Additional channel</p>
+                <h3 className="mt-1 text-lg font-bold text-white sm:mt-2 sm:text-xl">Extra Sells</h3>
               </div>
-              <div className="rounded-full p-1.5 text-slate-500 sm:p-2" style={{ backgroundColor: '#1a2b4a' }}>
+              <div className="rounded-full p-1.5 text-blue-300 sm:p-2" style={{ backgroundColor: '#1a2b4a' }}>
+                <ShoppingCart size={16} className="sm:size-[18px]" />
+              </div>
+            </div>
+
+            <div className="mt-4 space-y-0 sm:mt-6 divide-y" style={{ borderColor: '#1a2b4a' }}>
+              {simpleSell.length > 0 ? (
+                simpleSell.map((item, index) => (
+                  <div
+                    key={item._id || item.code || `extra-sell-${index}`}
+                    className="flex items-center justify-between gap-3 py-3 sm:py-4"
+                  >
+                    <div className="min-w-0 flex-1">
+                      <p className="text-xs font-semibold text-white truncate sm:text-sm">
+                        {item.productName || item.title || 'Unnamed product'}
+                      </p>
+                    </div>
+                    <span className="rounded-lg px-2.5 py-1 text-xs font-bold text-green-300 whitespace-nowrap sm:px-3 sm:py-1.5 sm:text-sm" style={{ backgroundColor: '#1a2b4a' }}>
+                      {formatCurrency(parseAmount(item.price))}
+                    </span>
+                  </div>
+                ))
+              ) : (
+                <div className="rounded-lg border border-dashed px-3 py-6 text-center text-xs text-slate-500 sm:rounded-2xl sm:px-4 sm:py-8 sm:text-sm" style={{ borderColor: '#1a2b4a', backgroundColor: '#010618' }}>
+                  No extra sells yet.
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className="rounded-3xl border p-4 shadow-sm sm:p-5 md:p-6 text-white" style={{ backgroundColor: '#0A1225', borderColor: '#1a2b4a' }}>
+            <div className="flex items-center justify-between gap-2 sm:gap-3">
+              <div>
+                <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-400 sm:text-xs sm:tracking-[0.2em]">Inventory health</p>
+                <h3 className="mt-1 text-lg font-bold sm:mt-2 sm:text-xl">Low stock items</h3>
+              </div>
+              <div className="rounded-full p-1.5 text-orange-300 sm:p-2" style={{ backgroundColor: '#1a2b4a' }}>
                 <Package size={16} className="sm:size-[18px]" />
               </div>
             </div>
 
-            <div className="mt-4 space-y-3 sm:mt-6 sm:space-y-4">
+            <div className="mt-4 space-y-3 sm:mt-6 sm:space-y-3 max-h-64 overflow-y-auto">
               {lowStockItems.length > 0 ? (
                 lowStockItems.map((item) => {
                   const stockLevel = Number(item.stock) || 0;
@@ -350,17 +386,13 @@ export default function Overview() {
 
                   return (
                     <div key={item.code || item.title || item._id || `${item.category}-stock`}>
-                      <div className="mb-1.5 flex items-center justify-between gap-2 sm:mb-2 sm:gap-3">
-                        <div className="min-w-0 flex-1">
-                          <p className="text-xs font-semibold text-white truncate sm:text-sm">{item.title || 'Unnamed product'}</p>
-                          <p className="text-[10px] text-slate-500 truncate sm:text-xs">{item.category || 'General'}</p>
-                        </div>
-                        <span className="rounded-full px-2 py-0.5 text-[10px] font-semibold text-orange-300 whitespace-nowrap sm:px-2.5 sm:py-1 sm:text-xs" style={{ backgroundColor: '#1a2b4a' }}>
+                      <div className="mb-1 flex items-center justify-between gap-2">
+                        <p className="text-xs font-semibold text-white truncate">{item.title || 'Unnamed product'}</p>
+                        <span className="rounded-full px-2 py-0.5 text-[10px] font-bold text-orange-300 whitespace-nowrap" style={{ backgroundColor: '#1a2b4a' }}>
                           {stockLevel}
                         </span>
                       </div>
-
-                      <div className="h-2 overflow-hidden rounded-full sm:h-2.5" style={{ backgroundColor: '#1a2b4a' }}>
+                      <div className="h-1.5 overflow-hidden rounded-full" style={{ backgroundColor: '#1a2b4a' }}>
                         <div
                           className="h-full rounded-full bg-gradient-to-r from-orange-400 to-orange-500"
                           style={{ width: `${fillWidth}%` }}
@@ -370,39 +402,10 @@ export default function Overview() {
                   );
                 })
               ) : (
-                <div className="rounded-lg border border-dashed px-3 py-4 text-center text-xs text-slate-500 sm:rounded-2xl sm:px-4 sm:py-6 sm:text-sm" style={{ borderColor: '#1a2b4a', backgroundColor: '#010618' }}>
-                  No inventory data available yet.
+                <div className="rounded-lg border border-dashed px-3 py-6 text-center text-xs text-slate-500" style={{ borderColor: '#1a2b4a', backgroundColor: '#010618' }}>
+                  No low stock items.
                 </div>
               )}
-            </div>
-          </div>
-
-          <div className="rounded-3xl border p-4 shadow-sm sm:p-5 md:p-6 text-white" style={{ backgroundColor: '#0A1225', borderColor: '#1a2b4a' }}>
-            <div className="flex items-center justify-between gap-2 sm:gap-3">
-              <div>
-                <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-400 sm:text-xs sm:tracking-[0.2em]">Performance</p>
-                <h3 className="mt-1 text-lg font-bold sm:mt-2 sm:text-xl">Sales snapshot</h3>
-              </div>
-              <div className="rounded-full p-1.5 text-blue-300 sm:p-2" style={{ backgroundColor: '#1a2b4a' }}>
-                <TrendingUp size={16} className="sm:size-[18px]" />
-              </div>
-            </div>
-
-            <div className="mt-4 space-y-2.5 sm:mt-6 sm:space-y-4">
-              <div className="rounded-lg border p-3 sm:rounded-2xl sm:p-4" style={{ backgroundColor: '#1a2b4a', borderColor: '#2a3b5a' }}>
-                <p className="text-[10px] uppercase tracking-[0.16em] text-slate-400 sm:text-xs sm:tracking-[0.18em]">Monthly revenue</p>
-                <p className="mt-2 text-xl font-bold text-white sm:mt-3 sm:text-2xl">{formatCurrency(stats.totalSaleThisMonth)}</p>
-              </div>
-
-              <div className="rounded-lg border p-3 sm:rounded-2xl sm:p-4" style={{ backgroundColor: '#1a2b4a', borderColor: '#2a3b5a' }}>
-                <p className="text-[10px] uppercase tracking-[0.16em] text-slate-400 sm:text-xs sm:tracking-[0.18em]">Today</p>
-                <p className="mt-2 text-xl font-bold text-white sm:mt-3 sm:text-2xl">{formatCurrency(stats.todaySell)}</p>
-              </div>
-
-              <div className="rounded-lg border p-3 sm:rounded-2xl sm:p-4" style={{ backgroundColor: '#1a2b4a', borderColor: '#2a3b5a' }}>
-                <p className="text-[10px] uppercase tracking-[0.16em] text-slate-400 sm:text-xs sm:tracking-[0.18em]">Inventory value</p>
-                <p className="mt-2 text-xl font-bold text-white sm:mt-3 sm:text-2xl">{formatCurrency(stats.totalProductValue)}</p>
-              </div>
             </div>
           </div>
         </div>
