@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { Eye, EyeOff, Pencil, Trash } from 'lucide-react';
+import { Eye, EyeOff, Pencil, Trash, Search } from 'lucide-react';
 import UpdatePost from "../Post/UpdatePost";
 import DeletePost from "../Post/DeletePost";
 import AddPost from "../Post/AddPost";
@@ -21,6 +21,7 @@ const Home = () => {
     const [searchQuery, setSearchQuery] = useState("");
     const [searchResults, setSearchResults] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
+    const [showMobileSearch, setShowMobileSearch] = useState(false);
     const itemsPerPage = 7; // Number of items per page
 
 
@@ -36,7 +37,7 @@ const Home = () => {
         }
 
         try {
-            const response = await fetch(`http://localhost:5000/posts/search?q=${query}`);
+            const response = await fetch(`https://maruf-gadget-admin-backend.onrender.com/posts/search?q=${query}`);
             const data = await response.json();
 
             setSearchResults([...(data.items || [])].reverse());
@@ -48,7 +49,7 @@ const Home = () => {
 
     const fetchData = async () => {
         try {
-            const response = await axios.get('http://localhost:5000/posts/');
+            const response = await axios.get('https://maruf-gadget-admin-backend.onrender.com/posts/');
             setItem([...response.data].reverse());
             setLoading(false);
         } catch (error) {
@@ -129,19 +130,22 @@ const Home = () => {
 
             <div className="mt-10 mb-5 flex flex-col gap-4 px-1 sm:px-2 md:flex-row md:items-center md:justify-between">
                 <Items name="All Products" />
-<CodeGenerator/>
+                
 
-                <div className="flex w-full flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-end">
+                <div className="flex w-full h-11 md:flex-row items-stretch gap-3 sm:flex-row sm:items-center sm:justify-end">
+                   <CodeGenerator/>
+                    {/* Add Items Button - Icon only on mobile */}
                     <button
                         type="button"
                         onClick={handleAddItem}
                         className="inline-flex items-center justify-center gap-2 rounded-md border border-blue-600 bg-[var(--secondary-color)] px-4 py-2 text-sm font-medium text-white transition hover:bg-[var(--primary-color)] sm:w-auto"
-                    >
+                    > 
                         <span className="text-base">➕</span>
-                        <span className="text-[var(--font-color)]">Add Items</span>
+                        <span className="hidden sm:inline text-[var(--font-color)]">Add Items</span>
                     </button>
 
-                    <div className="w-full sm:w-[320px] md:w-[360px]">
+                    {/* Search Section - Hidden on mobile, visible on sm and above */}
+                    <div className="hidden sm:block w-full sm:w-[320px] md:w-[360px]">
                         <form id="searchForm" className="flex w-full overflow-hidden rounded-md border border-blue-600 bg-[var(--secondary-color)]" onSubmit={(e) => e.preventDefault()}>
                             <input
                                 value={searchQuery}
@@ -160,7 +164,40 @@ const Home = () => {
                         </form>
                         <div id="searchResults" className="absolute z-10 mt-1 hidden w-full max-w-[360px] rounded-md bg-white shadow-lg"></div>
                     </div>
+
+                    {/* Mobile Search Button - Only on mobile */}
+                    <button
+                        type="button"
+                        onClick={() => setShowMobileSearch(!showMobileSearch)}
+                        className="sm:hidden inline-flex items-center justify-center rounded-md border border-blue-600 bg-blue-600 px-4 py-2 text-white transition hover:bg-blue-500"
+                    >
+                        <Search size={20} />
+                    </button>
                 </div>
+
+                {/* Mobile Search Form - Appears on mobile when search button is clicked */}
+                {showMobileSearch && (
+                    <div className="sm:hidden w-full">
+                        <form id="mobileSearchForm" className="flex w-full overflow-hidden rounded-md border border-blue-600 bg-[var(--secondary-color)]" onSubmit={(e) => e.preventDefault()}>
+                            <input
+                                value={searchQuery}
+                                onChange={handleSearch}
+                                type="text"
+                                placeholder="Search assets..."
+                                aria-label="Search assets"
+                                className="w-full bg-transparent px-4 py-2.5 text-sm text-white placeholder:text-slate-300 outline-none"
+                                autoFocus
+                            />
+                            <button
+                                type="submit"
+                                className="border-l border-blue-600 bg-blue-600 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-blue-500"
+                            >
+                                <Search size={18} />
+                            </button>
+                        </form>
+                        <div id="mobileSearchResults" className="absolute z-10 mt-1 hidden w-full rounded-md bg-white shadow-lg"></div>
+                    </div>
+                )}
             </div>
 
 
@@ -180,7 +217,7 @@ const Home = () => {
                             <td rowSpan="7" colSpan="10">
                                 <div className="flex items-center justify-center min-h-[350px]">
                                     <Spin />
-                                    {/* <LoadingSpin /> */}
+                                   {/* <LoadingSpin/> */}
                                 </div>
                             </td>
                         </tr>

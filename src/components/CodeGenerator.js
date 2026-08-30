@@ -25,7 +25,10 @@ const CodeGenerator = () => {
         if (generatedCode) {
             navigator.clipboard.writeText(generatedCode);
             setCodeCopied(true);
-            setTimeout(() => setCodeCopied(false), 2000);
+            setTimeout(() => {
+                setCodeCopied(false);
+                setGeneratedCode('');
+            }, 500);
         }
     };
 
@@ -49,31 +52,41 @@ const CodeGenerator = () => {
                     ) : (
                         <>
                             <Sparkles size={18} strokeWidth={1.8} />
-                            Generate Unique Code
+                            Generate Code
                         </>
                     )}
                 </button>
+            </div>
 
-                {generatedCode && (
-                    <div className="flex items-center gap-2 rounded-lg border border-purple-500/30 bg-purple-500/10 px-4 py-3 backdrop-blur-sm">
-                        <div className="flex-1">
-                            <p className="text-xs font-semibold uppercase tracking-widest text-purple-300">Generated Code</p>
-                            <p className="mt-1 text-xl md:text-2xl font-bold text-purple-100 tracking-widest">{generatedCode}</p>
-                        </div>
+            {/* Modal for Generated Code */}
+            {generatedCode && (
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 backdrop-blur-sm">
+                    <div className="bg-slate-900 rounded-lg border border-purple-500/30 p-6 max-w-md w-full mx-4 shadow-2xl">
+                        <p className="text-xs font-semibold uppercase tracking-widest text-purple-300 mb-3">Generated Code</p>
+                        <p className="text-2xl md:text-3xl font-bold text-purple-100 tracking-widest text-center mb-6 break-all">{generatedCode}</p>
                         <button
                             onClick={handleCopyCode}
-                            className="flex h-10 w-10 items-center justify-center rounded-lg bg-purple-600 text-white transition-all duration-200 hover:bg-purple-500"
-                            title="Copy to clipboard"
+                            className={`w-full flex items-center justify-center gap-2 py-3 rounded-lg font-medium transition-all duration-200 ${
+                                codeCopied
+                                    ? 'bg-green-600 text-white'
+                                    : 'bg-purple-600 text-white hover:bg-purple-500'
+                            }`}
                         >
                             {codeCopied ? (
-                                <Check size={18} className="text-green-400" />
+                                <>
+                                    <Check size={18} />
+                                    Copied!
+                                </>
                             ) : (
-                                <Copy size={18} />
+                                <>
+                                    <Copy size={18} />
+                                    Copy Code
+                                </>
                             )}
                         </button>
                     </div>
-                )}
-            </div>
+                </div>
+            )}
         </div>
     );
 };

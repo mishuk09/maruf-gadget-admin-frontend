@@ -15,7 +15,7 @@ const Delete = () => {
             navigate('/signin');
             return;
         }
-        axios.get('http://localhost:5000/posts')
+        axios.get('https://maruf-gadget-admin-backend.onrender.com/posts')
             .then(response => {
                 setPosts(response.data);
                 setLoading(false);

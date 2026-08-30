@@ -14,24 +14,24 @@ const Dashboard = lazy(() => import('./components/Auth/Dashboard'));
 function App() {
   return (
     <div className="App">
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={null}>
         <Routes>
-          {/* Public Routes */}
-          <Route path="/signin" element={<SignIn />} />
-          <Route path="/sign-up-register" element={<SignUp />} />
+        {/* Public Routes */}
+        <Route path="/signin" element={<SignIn />} />
+        <Route path="/sign-up-register" element={<SignUp />} />
 
-          {/* Protected Routes */}
-          <Route element={<ProtectedRoute />}>
-            <Route element={<Layout />}>
-              {/* Home & Dashboard */}
-              <Route path="/" element={<MainDashboard />} />
-              <Route path="/overview" element={<Overview />} />
-              <Route path="/home" element={<Home />} />
-              <Route path="/dashboard" element={<Dashboard />} />
+        {/* Protected Routes */}
+        <Route element={<ProtectedRoute />}>
+          <Route element={<Layout />}>
+            {/* Home & Dashboard */}
+            <Route path="/" element={<MainDashboard />} />
+            <Route path="/overview" element={<Overview />} />
+            <Route path="/home" element={<Home />} />
+            <Route path="/dashboard" element={<Dashboard />} />
 
-            </Route>
           </Route>
-        </Routes>
+        </Route>
+      </Routes>
       </Suspense>
     </div>
   );

@@ -67,7 +67,7 @@ const AddPost = ({ onClose, onAdd }) => {
         formData.append('description', description);
 
         try {
-            const res = await axios.post('http://localhost:5000/posts/add', formData, {
+            const res = await axios.post('https://maruf-gadget-admin-backend.onrender.com/posts/add', formData, {
             });
 
             // Reset fields
