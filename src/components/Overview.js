@@ -225,64 +225,65 @@ export default function Overview() {
   ];
 
   return (
-    <div className="min-h-screen bg-slate-100 px-4 py-6 md:px-6 lg:px-8">
+    <div className="min-h-screen bg-slate-100 px-3 py-4 sm:px-4 sm:py-6 md:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
-        <div className="mb-6 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+        <div className="mb-4 pt-10 flex flex-col gap-2.5 sm:mb-6 sm:gap-3 md:flex-row md:items-center md:justify-between">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-500">Dashboard</p>
-            <h1 className="mt-2 text-2xl font-bold text-slate-900 md:text-3xl">Overview</h1>
+            <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-500 sm:text-xs">Dashboard</p>
+            <h1 className="mt-1 text-xl font-bold text-slate-900 sm:mt-2 sm:text-2xl md:text-3xl">Overview</h1>
           </div>
 
-          <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-xs font-medium text-emerald-700">
-            <TrendingUp size={14} />
-            {loading ? 'Syncing live data...' : 'Live sales overview'}
+          <div className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[10px] font-medium text-emerald-700 sm:gap-2 sm:px-3 sm:py-1.5 sm:text-xs">
+            <TrendingUp size={12} className="sm:block hidden" />
+            <TrendingUp size={10} className="sm:hidden" />
+            {loading ? 'Syncing...' : 'Live overview'}
           </div>
         </div>
 
         {error && (
-          <div className="mb-6 flex items-center gap-3 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
-            <AlertTriangle size={18} />
-            {error}
+          <div className="mb-4 flex items-start gap-2.5 rounded-lg border border-rose-200 bg-rose-50 px-3 py-2.5 text-xs text-rose-700 sm:mb-6 sm:gap-3 sm:rounded-2xl sm:px-4 sm:py-3 sm:text-sm">
+            <AlertTriangle size={16} className="mt-0.5 flex-shrink-0 sm:size-[18px]" />
+            <span>{error}</span>
           </div>
         )}
 
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
+        <div className="grid gap-3 grid-cols-2 sm:gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
           {overviewCards.map(({ label, value, detail, icon: Icon, accent, iconClass }) => (
             <div
               key={label}
-              className={`rounded-lg border border-slate-200 bg-gradient-to-br ${accent} p-4 shadow-[0_20px_30px_rgba(15,23,42,0.06)] backdrop-blur-sm`}
+              className={`rounded-lg border border-slate-200 bg-gradient-to-br ${accent} p-3 shadow-[0_20px_30px_rgba(15,23,42,0.06)] backdrop-blur-sm sm:p-4`}
             >
-              <div className="flex items-center justify-between gap-3">
-                <div className={`flex h-11 w-11 items-center justify-center rounded-lg ${iconClass}`}>
-                  <Icon size={20} strokeWidth={2.2} className="drop-shadow-sm" />
+              <div className="flex items-center justify-between gap-2 sm:gap-3">
+                <div className={`flex h-9 w-9 items-center justify-center rounded-lg sm:h-11 sm:w-11 ${iconClass}`}>
+                  <Icon size={18} strokeWidth={2.2} className="drop-shadow-sm sm:size-5" />
                 </div>
-                <span className="rounded-full bg-white/70 p-1 text-slate-600">
-                  <ArrowUpRight size={14} strokeWidth={2.2} />
+                <span className="rounded-full bg-white/70 p-0.5 text-slate-600 sm:p-1">
+                  <ArrowUpRight size={12} strokeWidth={2.2} className="sm:size-[14px]" />
                 </span>
               </div>
 
-              <div className="mt-6">
-                <p className="text-xs font-medium uppercase tracking-[0.16em] text-slate-500">{label}</p>
-                <h2 className="mt-3 text-2xl font-bold text-slate-900">{value}</h2>
-                <p className="mt-2 text-sm text-slate-600">{detail}</p>
+              <div className="mt-4 sm:mt-6">
+                <p className="text-[10px] font-medium uppercase tracking-[0.14em] text-slate-500 sm:text-xs sm:tracking-[0.16em]">{label}</p>
+                <h2 className="mt-1.5 text-lg font-bold text-slate-900 sm:mt-3 sm:text-2xl">{value}</h2>
+                <p className="mt-1 text-xs text-slate-600 sm:mt-2 sm:text-sm">{detail}</p>
               </div>
             </div>
           ))}
         </div>
 
-        <div className="mt-8 grid gap-6 xl:grid-cols-[1.4fr_0.6fr]">
-          <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm md:p-6">
-            <div className="flex items-center justify-between gap-3">
+        <div className="mt-6 grid gap-4 sm:mt-8 sm:gap-6 lg:grid-cols-[1.4fr_0.6fr]">
+          <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5 md:p-6">
+            <div className="flex items-center justify-between gap-2 sm:gap-3">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Inventory health</p>
-                <h3 className="mt-2 text-xl font-bold text-slate-900">Low stock items</h3>
+                <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500 sm:text-xs sm:tracking-[0.2em]">Inventory health</p>
+                <h3 className="mt-1 text-lg font-bold text-slate-900 sm:mt-2 sm:text-xl">Low stock items</h3>
               </div>
-              <div className="rounded-full bg-slate-100 p-2 text-slate-600">
-                <Package size={18} />
+              <div className="rounded-full bg-slate-100 p-1.5 text-slate-600 sm:p-2">
+                <Package size={16} className="sm:size-[18px]" />
               </div>
             </div>
 
-            <div className="mt-6 space-y-4">
+            <div className="mt-4 space-y-3 sm:mt-6 sm:space-y-4">
               {lowStockItems.length > 0 ? (
                 lowStockItems.map((item) => {
                   const stockLevel = Number(item.stock) || 0;
@@ -290,17 +291,17 @@ export default function Overview() {
 
                   return (
                     <div key={item.code || item.title || item._id || `${item.category}-stock`}>
-                      <div className="mb-2 flex items-center justify-between gap-3">
-                        <div>
-                          <p className="text-sm font-semibold text-slate-800">{item.title || 'Unnamed product'}</p>
-                          <p className="text-xs text-slate-500">{item.category || 'General'}</p>
+                      <div className="mb-1.5 flex items-center justify-between gap-2 sm:mb-2 sm:gap-3">
+                        <div className="min-w-0 flex-1">
+                          <p className="text-xs font-semibold text-slate-800 truncate sm:text-sm">{item.title || 'Unnamed product'}</p>
+                          <p className="text-[10px] text-slate-500 truncate sm:text-xs">{item.category || 'General'}</p>
                         </div>
-                        <span className="rounded-full bg-amber-50 px-2.5 py-1 text-xs font-semibold text-amber-700">
-                          {stockLevel} left
+                        <span className="rounded-full bg-amber-50 px-2 py-0.5 text-[10px] font-semibold text-amber-700 whitespace-nowrap sm:px-2.5 sm:py-1 sm:text-xs">
+                          {stockLevel}
                         </span>
                       </div>
 
-                      <div className="h-2.5 overflow-hidden rounded-full bg-slate-100">
+                      <div className="h-2 overflow-hidden rounded-full bg-slate-100 sm:h-2.5">
                         <div
                           className="h-full rounded-full bg-gradient-to-r from-amber-400 to-orange-500"
                           style={{ width: `${fillWidth}%` }}
@@ -310,38 +311,38 @@ export default function Overview() {
                   );
                 })
               ) : (
-                <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 px-4 py-6 text-center text-sm text-slate-500">
+                <div className="rounded-lg border border-dashed border-slate-300 bg-slate-50 px-3 py-4 text-center text-xs text-slate-500 sm:rounded-2xl sm:px-4 sm:py-6 sm:text-sm">
                   No inventory data available yet.
                 </div>
               )}
             </div>
           </div>
 
-          <div className="rounded-3xl border border-slate-200 bg-slate-900 p-5 text-white shadow-sm md:p-6">
-            <div className="flex items-center justify-between gap-3">
+          <div className="rounded-3xl border border-slate-200 bg-slate-900 p-4 text-white shadow-sm sm:p-5 md:p-6">
+            <div className="flex items-center justify-between gap-2 sm:gap-3">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">Performance</p>
-                <h3 className="mt-2 text-xl font-bold">Sales snapshot</h3>
+                <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-400 sm:text-xs sm:tracking-[0.2em]">Performance</p>
+                <h3 className="mt-1 text-lg font-bold sm:mt-2 sm:text-xl">Sales snapshot</h3>
               </div>
-              <div className="rounded-full bg-white/5 p-2 text-sky-300">
-                <TrendingUp size={18} />
+              <div className="rounded-full bg-white/5 p-1.5 text-sky-300 sm:p-2">
+                <TrendingUp size={16} className="sm:size-[18px]" />
               </div>
             </div>
 
-            <div className="mt-6 space-y-4">
-              <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-                <p className="text-xs uppercase tracking-[0.18em] text-slate-400">Monthly revenue</p>
-                <p className="mt-3 text-2xl font-bold text-white">{formatCurrency(stats.totalSaleThisMonth)}</p>
+            <div className="mt-4 space-y-2.5 sm:mt-6 sm:space-y-4">
+              <div className="rounded-lg border border-white/10 bg-white/5 p-3 sm:rounded-2xl sm:p-4">
+                <p className="text-[10px] uppercase tracking-[0.16em] text-slate-400 sm:text-xs sm:tracking-[0.18em]">Monthly revenue</p>
+                <p className="mt-2 text-xl font-bold text-white sm:mt-3 sm:text-2xl">{formatCurrency(stats.totalSaleThisMonth)}</p>
               </div>
 
-              <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-                <p className="text-xs uppercase tracking-[0.18em] text-slate-400">Today</p>
-                <p className="mt-3 text-2xl font-bold text-white">{formatCurrency(stats.todaySell)}</p>
+              <div className="rounded-lg border border-white/10 bg-white/5 p-3 sm:rounded-2xl sm:p-4">
+                <p className="text-[10px] uppercase tracking-[0.16em] text-slate-400 sm:text-xs sm:tracking-[0.18em]">Today</p>
+                <p className="mt-2 text-xl font-bold text-white sm:mt-3 sm:text-2xl">{formatCurrency(stats.todaySell)}</p>
               </div>
 
-              <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-                <p className="text-xs uppercase tracking-[0.18em] text-slate-400">Inventory value</p>
-                <p className="mt-3 text-2xl font-bold text-white">{formatCurrency(stats.totalProductValue)}</p>
+              <div className="rounded-lg border border-white/10 bg-white/5 p-3 sm:rounded-2xl sm:p-4">
+                <p className="text-[10px] uppercase tracking-[0.16em] text-slate-400 sm:text-xs sm:tracking-[0.18em]">Inventory value</p>
+                <p className="mt-2 text-xl font-bold text-white sm:mt-3 sm:text-2xl">{formatCurrency(stats.totalProductValue)}</p>
               </div>
             </div>
           </div>
