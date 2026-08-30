@@ -93,6 +93,7 @@ const normalizeSales = (items) =>
 export default function Overview() {
   const [products, setProducts] = useState([]);
   const [sales, setSales] = useState([]);
+  const [simpleSell, setSimpleSell] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -106,6 +107,7 @@ export default function Overview() {
 
         const productEndpoints = ['https://maruf-gadget-admin-backend.onrender.com/posts/' ];
         const salesEndpoints = ['https://maruf-gadget-admin-backend.onrender.com/posts/sell/all' ];
+        const simpleSellEndpoints = ['http://localhost:5000/posts/simple-sell/all'];
 
         const productRequests = await Promise.allSettled(
           productEndpoints.map((endpoint) => axios.get(endpoint))
@@ -113,6 +115,10 @@ export default function Overview() {
 
         const salesRequests = await Promise.allSettled(
           salesEndpoints.map((endpoint) => axios.get(endpoint))
+        );
+
+        const simpleSellRequests = await Promise.allSettled(
+          simpleSellEndpoints.map((endpoint) => axios.get(endpoint))
         );
 
         const collectedProducts = productRequests.flatMap((request) => {
@@ -125,10 +131,16 @@ export default function Overview() {
           return normalizeList(request.value?.data || []);
         });
 
+        const collectedSimpleSell = simpleSellRequests.flatMap((request) => {
+          if (request.status !== 'fulfilled') return [];
+          return normalizeList(request.value?.data || []);
+        });
+
         if (!isMounted) return;
 
         setProducts(normalizeProducts(collectedProducts));
         setSales(normalizeSales(collectedSales));
+        setSimpleSell(normalizeSales(collectedSimpleSell));
       } catch (requestError) {
         if (isMounted) {
           console.error('Failed to load overview data:', requestError);
@@ -156,6 +168,7 @@ export default function Overview() {
     const todaySell = sales
       .filter((item) => isToday(item.createdAt))
       .reduce((sum, item) => sum + parseAmount(item.price), 0);
+    const extraSellAmount = simpleSell.reduce((sum, item) => sum + parseAmount(item.price), 0);
     const stockItem = products.reduce((sum, item) => sum + (Number(item.stock) || 0), 0);
     const totalProductValue = products.reduce(
       (sum, item) => sum + (Number(item.newPrice) || 0),
@@ -166,10 +179,11 @@ export default function Overview() {
       totalSale,
       totalSaleThisMonth,
       todaySell,
+      extraSellAmount,
       stockItem,
       totalProductValue,
     };
-  }, [sales, products]);
+  }, [sales, products, simpleSell]);
 
   const lowStockItems = useMemo(
     () => [...products].sort((a, b) => (Number(a.stock) || 0) - (Number(b.stock) || 0)).slice(0, 5),
@@ -269,6 +283,23 @@ export default function Overview() {
               </div>
             </div>
           ))}
+        </div>
+
+        <div className="mt-6 sm:mt-8 rounded-lg border border-slate-200 bg-gradient-to-br from-indigo-500/20 to-blue-400/5 p-3 shadow-[0_20px_30px_rgba(15,23,42,0.06)] backdrop-blur-sm sm:p-4">
+          <div className="flex items-center justify-between gap-2 sm:gap-3">
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-indigo-500/25 text-white ring-1 ring-white/20 sm:h-11 sm:w-11">
+              <TrendingUp size={18} strokeWidth={2.2} className="drop-shadow-sm sm:size-5" />
+            </div>
+            <span className="rounded-full bg-white/70 p-0.5 text-slate-600 sm:p-1">
+              <ArrowUpRight size={12} strokeWidth={2.2} className="sm:size-[14px]" />
+            </span>
+          </div>
+
+          <div className="mt-4 sm:mt-6">
+            <p className="text-[10px] font-medium uppercase tracking-[0.14em] text-slate-500 sm:text-xs sm:tracking-[0.16em]">Extra Sell</p>
+            <h2 className="mt-1.5 text-lg font-bold text-slate-900 sm:mt-3 sm:text-2xl">{formatCurrency(stats.extraSellAmount)}</h2>
+            <p className="mt-1 text-xs text-slate-600 sm:mt-2 sm:text-sm">{simpleSell.length} extra sales</p>
+          </div>
         </div>
 
         <div className="mt-6 grid gap-4 sm:mt-8 sm:gap-6 lg:grid-cols-[1.4fr_0.6fr]">
