@@ -14,7 +14,7 @@ const DeletePost = ({ id, onClose, onDelete }) => {
 
     const handleDelete = () => {
         setLoading(true)
-        axios.delete(`https://maruf-gadget-admin-backend.onrender.com/posts/${id}`)
+        axios.delete(`http://localhost:5000/posts/${id}`)
             .then(() => {
                 console.log('Post deleted.');
                 setSuccess(true)

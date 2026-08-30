@@ -6,6 +6,7 @@ import DeletePost from "../Post/DeletePost";
 import AddPost from "../Post/AddPost";
 import Spin from "../utills/Spin";
 import Items from "../utills/Items";
+import CodeGenerator from "../CodeGenerator";
 
 
 
@@ -35,7 +36,7 @@ const Home = () => {
         }
 
         try {
-            const response = await fetch(`https://maruf-gadget-admin-backend.onrender.com/posts/search?q=${query}`);
+            const response = await fetch(`http://localhost:5000/posts/search?q=${query}`);
             const data = await response.json();
 
             setSearchResults([...(data.items || [])].reverse());
@@ -47,7 +48,7 @@ const Home = () => {
 
     const fetchData = async () => {
         try {
-            const response = await axios.get('https://maruf-gadget-admin-backend.onrender.com/posts/');
+            const response = await axios.get('http://localhost:5000/posts/');
             setItem([...response.data].reverse());
             setLoading(false);
         } catch (error) {
@@ -128,7 +129,7 @@ const Home = () => {
 
             <div className="mt-10 mb-5 flex flex-col gap-4 px-1 sm:px-2 md:flex-row md:items-center md:justify-between">
                 <Items name="All Products" />
-
+<CodeGenerator/>
 
                 <div className="flex w-full flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-end">
                     <button

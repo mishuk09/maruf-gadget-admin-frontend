@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Search, ShoppingCart, Store, Sparkles } from 'lucide-react';
 import PriceCheck from './Product/PriceCheck';
 import Sell from './Product/Sell';
+import CodeGenerator from './CodeGenerator';
 
 const MainDashboard = () => {
     const [activeMobileTab, setActiveMobileTab] = useState('price-check');
@@ -30,6 +31,9 @@ const MainDashboard = () => {
                                         Check product prices instantly and process sales seamlessly. A unified dashboard built specifically for speed and clarity.
                                     </p>
                                 </div>
+
+                                {/* Unique Code Generator Component */}
+                                <CodeGenerator />
 
                                 <div className="flex w-full max-w-3xl flex-col gap-2.5 sm:flex-row sm:gap-3 md:hidden">
                                     <div className="flex rounded-lg border border-white/10 bg-slate-950/50 p-1">

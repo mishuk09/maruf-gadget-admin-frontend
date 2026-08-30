@@ -31,7 +31,7 @@ const Orders = () => {
         }
 
         try {
-            const response = await fetch(`https://maruf-gadget-admin-backend.onrender.com/item/search?q=${query}`);
+            const response = await fetch(`http://localhost:5000/item/search?q=${query}`);
             const data = await response.json();
 
             setSearchResults(data.items || []);
@@ -44,7 +44,7 @@ const Orders = () => {
     useEffect(() => {
         const fetchOrders = async () => {
             try {
-                const response = await axios.get('https://maruf-gadget-admin-backend.onrender.com/item/orders')
+                const response = await axios.get('http://localhost:5000/item/orders')
                 setOrders(response.data);
                 setLoading(false);
             } catch (error) {
@@ -63,7 +63,7 @@ const Orders = () => {
     const handleCompleteOrder = async (orderId) => {
         setLoadingOrderId(orderId);
         try {
-            await axios.delete(`https://maruf-gadget-admin-backend.onrender.com/item/orders/${orderId}`)
+            await axios.delete(`http://localhost:5000/item/orders/${orderId}`)
 
             setOrders(orders.filter(order => order._id !== orderId));
         } catch (error) {
