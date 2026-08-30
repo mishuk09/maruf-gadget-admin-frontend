@@ -27,14 +27,12 @@ const fetchExistingCodes = async () => {
 
 /**
  * Generate a single unique code
- * Format: [Single Letter A-Z][3 Digits 000-999]
- * Example: A123, B456, Z999
+ * Format: [3 Digits 000-999]
+ * Example: 123, 456, 999
  */
 const generateSingleCode = () => {
-    const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    const randomLetter = letters.charAt(Math.floor(Math.random() * letters.length));
     const randomDigits = String(Math.floor(Math.random() * 1000)).padStart(3, '0');
-    return randomLetter + randomDigits;
+    return randomDigits;
 };
 
 /**

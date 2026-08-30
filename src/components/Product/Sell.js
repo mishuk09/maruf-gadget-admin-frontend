@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { BadgeCheck, ChevronRight, HandCoins, LoaderCircle, ShoppingCart, Hash, CircleDollarSign, Boxes, PackageSearch } from 'lucide-react';
 import Alert from '../Alert';
+import Modal from '../utills/Modal';
+import ExtraSell from '../utills/ExtraSell';
 
 const getCurrencySymbol = () => {
     if (typeof document === 'undefined') {
@@ -22,6 +24,7 @@ const Sell = () => {
     const [alertType, setAlertType] = useState('');
     const [soldItem, setSoldItem] = useState(null);
     const [lookupResults, setLookupResults] = useState([]);
+    const [isExtraSellOpen, setIsExtraSellOpen] = useState(false);
 
     const normalizeValue = (value) => String(value ?? '').trim().toLowerCase();
     const getDisplayPrice = (itemPrice, productPrice, fallback = '-') => {
@@ -189,15 +192,32 @@ const Sell = () => {
                         type={alertType === 'success' ? 'success' : 'error'}
                     />
                 )}
+            <Modal
+                isOpen={isExtraSellOpen}
+                onClose={() => setIsExtraSellOpen(false)}
+                title="Extra Sell"
+            >
+                <ExtraSell onClose={() => setIsExtraSellOpen(false)} />
+            </Modal>
         <section className="rounded-lg border border-emerald-400/15 bg-slate-900/80 p-2 shadow-lg shadow-emerald-950/20 backdrop-blur sm:p-6">
-            <div className="flex items-center gap-3">
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500/15 text-emerald-300 sm:h-12 sm:w-12">
-                    <HandCoins size={16} className="sm:hidden" />
-                    <HandCoins size={20} className="hidden sm:block" />
+            <div className="flex items-center justify-between gap-3">
+                <div className="flex items-center gap-3">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500/15 text-emerald-300 sm:h-12 sm:w-12">
+                        <HandCoins size={16} className="sm:hidden" />
+                        <HandCoins size={20} className="hidden sm:block" />
+                    </div>
+                    <div>
+                        <h2 className="text-sm font-semibold text-white sm:text-xl">Sell</h2>
+                    </div>
                 </div>
                 <div>
-                    <h2 className="text-sm font-semibold text-white sm:text-xl">Sell</h2>
-                    <p className="hidden text-sm text-slate-400 sm:block">Enter a product code to reduce stock and save the sell record.</p>
+                    <button
+                        type="button"
+                        onClick={() => setIsExtraSellOpen(true)}
+                        className="btn-primary btn-pulse"
+                    >
+                        Extra Sell
+                    </button>
                 </div>
             </div>
 

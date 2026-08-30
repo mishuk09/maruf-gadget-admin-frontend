@@ -21,3 +21,38 @@ body {
 code {
   font-family: var(--font-source-code-pro);
 }
+
+/* Professional Button Styles */
+.btn-primary {
+  @apply inline-flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-medium transition duration-300 active:scale-95 sm:px-4 sm:py-2 sm:text-sm;
+  background: linear-gradient(135deg, var(--secondary-color) 0%, rgba(10, 18, 37, 0.8) 100%);
+  color: var(--font-color);
+  border: 1px solid rgba(183, 196, 207, 0.2);
+  box-shadow: 0 8px 16px rgba(1, 6, 24, 0.4);
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, rgba(10, 18, 37, 0.9) 0%, var(--secondary-color) 100%);
+  border-color: rgba(183, 196, 207, 0.4);
+  box-shadow: 0 12px 24px rgba(1, 6, 24, 0.6), 0 0 20px rgba(183, 196, 207, 0.15);
+}
+
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  box-shadow: 0 4px 8px rgba(1, 6, 24, 0.3);
+}
+
+/* Animated Pulse Effect */
+.btn-pulse {
+  animation: pulseGlow 2.5s ease-in-out infinite;
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 8px 16px rgba(1, 6, 24, 0.4), 0 0 10px rgba(183, 196, 207, 0.1);
+  }
+  50% {
+    box-shadow: 0 8px 16px rgba(1, 6, 24, 0.6), 0 0 20px rgba(183, 196, 207, 0.25);
+  }
+}

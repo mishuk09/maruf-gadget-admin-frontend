@@ -114,7 +114,7 @@ const PriceCheck = () => {
                 </div>
                 <div>
                     <h2 className="text-sm sm:text-xl font-semibold text-white">Price Check</h2>
-                    <p className="hidden sm:block text-sm text-slate-400">Search a product, code, or category before selling.</p>
+                    {/* <p className="hidden sm:block text-sm text-slate-400">Search a product, code, or category before selling.</p> */}
                 </div>
             </div>
 
