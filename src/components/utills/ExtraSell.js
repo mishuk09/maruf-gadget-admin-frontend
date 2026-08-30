@@ -30,7 +30,7 @@ const ExtraSell = ({ onClose }) => {
         setAlertType('');
 
         try {
-            const response = await axios.post('http://localhost:5000/posts/simple-sell', {
+            const response = await axios.post('https://maruf-gadget-admin-backend.onrender.com/posts/simple-sell', {
                 title: productName.trim(),
                 price: Number(price),
             });
