@@ -247,7 +247,7 @@ export default function Overview() {
   ];
 
   return (
-    <div className="min-h-screen px-3 py-4 sm:px-4 sm:py-6 md:px-6 lg:px-8" style={{ backgroundColor: '#010618' }}>
+    <div className="min-h-screen px-3 py-4 sm:px-4 sm:py-6 md:px-6 lg:px-8 bg-[var(--primary-color)]">
       <div className="mx-auto max-w-7xl">
         <div className="mb-4 pt-10 flex flex-col gap-2.5 sm:mb-6 sm:gap-3 md:flex-row md:items-center md:justify-between">
           <div>
@@ -255,7 +255,7 @@ export default function Overview() {
             <h1 className="mt-1 text-xl font-bold text-white sm:mt-2 sm:text-2xl md:text-3xl">Overview</h1>
           </div>
 
-          <div className="inline-flex items-center gap-1.5 rounded-full border border-blue-400/30 px-2.5 py-1 text-[10px] font-medium text-blue-300 sm:gap-2 sm:px-3 sm:py-1.5 sm:text-xs" style={{ backgroundColor: '#0A1225' }}>
+          <div className="inline-flex items-center gap-1.5 rounded-full border border-blue-400/30 px-2.5 py-1 text-[10px] font-medium text-blue-300 sm:gap-2 sm:px-3 sm:py-1.5 sm:text-xs bg-[var(--secondary-color)]">
             <TrendingUp size={12} className="sm:block hidden" />
             <TrendingUp size={10} className="sm:hidden" />
             {loading ? 'Syncing...' : 'Live overview'}
@@ -273,14 +273,13 @@ export default function Overview() {
           {overviewCards.map(({ label, value, detail, icon: Icon, accent, iconClass }) => (
             <div
               key={label}
-              className={`rounded-lg border bg-gradient-to-br ${accent} p-3 shadow-[0_20px_30px_rgba(1,6,24,0.6)] backdrop-blur-sm sm:p-4`}
-              style={{ backgroundColor: '#0A1225', borderColor: '#1a2b4a' }}
+              className={`rounded-lg border bg-gradient-to-br ${accent} p-3 shadow-[0_20px_30px_rgba(1,6,24,0.6)] backdrop-blur-sm sm:p-4 bg-[var(--secondary-color)] border-[var(--border-color)]`}
             >
               <div className="flex items-center justify-between gap-2 sm:gap-3">
                 <div className={`flex h-9 w-9 items-center justify-center rounded-lg sm:h-11 sm:w-11 ${iconClass}`}>
                   <Icon size={18} strokeWidth={2.2} className="drop-shadow-sm sm:size-5" />
                 </div>
-                <span className="rounded-full p-0.5 text-slate-400 sm:p-1" style={{ backgroundColor: '#1a2b4a' }}>
+                <span className="rounded-full p-0.5 text-slate-400 sm:p-1 bg-[var(--border-color)]">
                   <ArrowUpRight size={12} strokeWidth={2.2} className="sm:size-[14px]" />
                 </span>
               </div>
@@ -295,12 +294,12 @@ export default function Overview() {
         </div>
 
         <div className="mt-6 sm:mt-8 grid gap-3 grid-cols-1 sm:gap-4 sm:grid-cols-2">
-          <div className="rounded-lg border p-3 shadow-[0_20px_30px_rgba(1,6,24,0.6)] backdrop-blur-sm sm:p-4 bg-gradient-to-br from-blue-500/10 to-blue-400/5" style={{ backgroundColor: '#0A1225', borderColor: '#1a2b4a' }}>
+          <div className="rounded-lg border p-3 shadow-[0_20px_30px_rgba(1,6,24,0.6)] backdrop-blur-sm sm:p-4 bg-gradient-to-br from-blue-500/10 to-blue-400/5 bg-[var(--secondary-color)] border-[var(--border-color)]">
             <div className="flex items-center justify-between gap-2 sm:gap-3">
               <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-500/20 text-blue-300 ring-1 ring-blue-400/30 sm:h-11 sm:w-11">
                 <TrendingUp size={18} strokeWidth={2.2} className="drop-shadow-sm sm:size-5" />
               </div>
-              <span className="rounded-full p-0.5 text-slate-400 sm:p-1" style={{ backgroundColor: '#1a2b4a' }}>
+              <span className="rounded-full p-0.5 text-slate-400 sm:p-1 bg-[var(--border-color)]">
                 <ArrowUpRight size={12} strokeWidth={2.2} className="sm:size-[14px]" />
               </span>
             </div>
@@ -312,12 +311,12 @@ export default function Overview() {
             </div>
           </div>
 
-          <div className="rounded-lg border p-3 shadow-[0_20px_30px_rgba(1,6,24,0.6)] backdrop-blur-sm sm:p-4 bg-gradient-to-br from-purple-500/10 to-purple-400/5" style={{ backgroundColor: '#0A1225', borderColor: '#1a2b4a' }}>
+          <div className="rounded-lg border p-3 shadow-[0_20px_30px_rgba(1,6,24,0.6)] backdrop-blur-sm sm:p-4 bg-gradient-to-br from-purple-500/10 to-purple-400/5 bg-[var(--secondary-color)] border-[var(--border-color)]">
             <div className="flex items-center justify-between gap-2 sm:gap-3">
               <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-purple-500/20 text-purple-300 ring-1 ring-purple-400/30 sm:h-11 sm:w-11">
                 <ShoppingCart size={18} strokeWidth={2.2} className="drop-shadow-sm sm:size-5" />
               </div>
-              <span className="rounded-full p-0.5 text-slate-400 sm:p-1" style={{ backgroundColor: '#1a2b4a' }}>
+              <span className="rounded-full p-0.5 text-slate-400 sm:p-1 bg-[var(--border-color)]">
                 <ArrowUpRight size={12} strokeWidth={2.2} className="sm:size-[14px]" />
               </span>
             </div>
@@ -331,18 +330,18 @@ export default function Overview() {
         </div>
 
         <div className="mt-6 grid gap-4 sm:mt-8 sm:gap-6 lg:grid-cols-[1.4fr_0.6fr]">
-          <div className="rounded-3xl border p-4 shadow-sm sm:p-5 md:p-6 text-white" style={{ backgroundColor: '#0A1225', borderColor: '#1a2b4a' }}>
+          <div className="rounded-lg border p-4 shadow-sm sm:p-5 md:p-6 text-white bg-[var(--secondary-color)] border-[var(--border-color)]">
             <div className="flex items-center justify-between gap-2 sm:gap-3">
               <div>
-                <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-400 sm:text-xs sm:tracking-[0.2em]">Additional channel</p>
+                
                 <h3 className="mt-1 text-lg font-bold text-white sm:mt-2 sm:text-xl">Extra Sells</h3>
               </div>
-              <div className="rounded-full p-1.5 text-blue-300 sm:p-2" style={{ backgroundColor: '#1a2b4a' }}>
+              <div className="rounded-full p-1.5 text-blue-300 sm:p-2 bg-[var(--border-color)]">
                 <ShoppingCart size={16} className="sm:size-[18px]" />
               </div>
             </div>
 
-            <div className="mt-4 space-y-0 sm:mt-6 divide-y" style={{ borderColor: '#1a2b4a' }}>
+            <div className="mt-4 space-y-0 sm:mt-6 divide-y max-h-64 overflow-y-auto scrollbar-thin" style={{ borderColor: 'var(--border-color)' }}>
               {simpleSell.length > 0 ? (
                 simpleSell.map((item, index) => (
                   <div
@@ -350,35 +349,35 @@ export default function Overview() {
                     className="flex items-center justify-between gap-3 py-3 sm:py-4"
                   >
                     <div className="min-w-0 flex-1">
-                      <p className="text-xs font-semibold text-white truncate sm:text-sm">
+                      <p className="text-xs font-semibold text-slate-500  truncate sm:text-sm">
                         {item.productName || item.title || 'Unnamed product'}
                       </p>
                     </div>
-                    <span className="rounded-lg px-2.5 py-1 text-xs font-bold text-green-300 whitespace-nowrap sm:px-3 sm:py-1.5 sm:text-sm" style={{ backgroundColor: '#1a2b4a' }}>
+                    <span className="rounded-lg px-2.5 py-1 text-xs font-bold text-green-300 whitespace-nowrap sm:px-3 sm:py-1.5 sm:text-sm bg-[var(--border-color)]">
                       {formatCurrency(parseAmount(item.price))}
                     </span>
                   </div>
                 ))
               ) : (
-                <div className="rounded-lg border border-dashed px-3 py-6 text-center text-xs text-slate-500 sm:rounded-2xl sm:px-4 sm:py-8 sm:text-sm" style={{ borderColor: '#1a2b4a', backgroundColor: '#010618' }}>
+                <div className="rounded-lg border border-dashed px-3 py-6 text-center text-xs text-slate-500 sm:rounded-2xl sm:px-4 sm:py-8 sm:text-sm" style={{ borderColor: 'var(--border-color)', backgroundColor: 'var(--primary-color)' }}>
                   No extra sells yet.
                 </div>
               )}
             </div>
           </div>
 
-          <div className="rounded-3xl border p-4 shadow-sm sm:p-5 md:p-6 text-white" style={{ backgroundColor: '#0A1225', borderColor: '#1a2b4a' }}>
+          <div className="rounded-lg border p-4 shadow-sm sm:p-5 md:p-6 text-white bg-[var(--secondary-color)] border-[var(--border-color)]">
             <div className="flex items-center justify-between gap-2 sm:gap-3">
               <div>
                 <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-400 sm:text-xs sm:tracking-[0.2em]">Inventory health</p>
                 <h3 className="mt-1 text-lg font-bold sm:mt-2 sm:text-xl">Low stock items</h3>
               </div>
-              <div className="rounded-full p-1.5 text-orange-300 sm:p-2" style={{ backgroundColor: '#1a2b4a' }}>
+              <div className="rounded-full p-1.5 text-orange-300 sm:p-2 bg-[var(--border-color)]">
                 <Package size={16} className="sm:size-[18px]" />
               </div>
             </div>
 
-            <div className="mt-4 space-y-3 sm:mt-6 sm:space-y-3 max-h-64 overflow-y-auto">
+            <div className="mt-4 space-y-3 sm:mt-6 sm:space-y-3 max-h-64 overflow-y-auto scrollbar-thin">
               {lowStockItems.length > 0 ? (
                 lowStockItems.map((item) => {
                   const stockLevel = Number(item.stock) || 0;
@@ -388,11 +387,11 @@ export default function Overview() {
                     <div key={item.code || item.title || item._id || `${item.category}-stock`}>
                       <div className="mb-1 flex items-center justify-between gap-2">
                         <p className="text-xs font-semibold text-white truncate">{item.title || 'Unnamed product'}</p>
-                        <span className="rounded-full px-2 py-0.5 text-[10px] font-bold text-orange-300 whitespace-nowrap" style={{ backgroundColor: '#1a2b4a' }}>
+                        <span className="rounded-full px-2 py-0.5 text-[10px] font-bold text-orange-300 whitespace-nowrap bg-[var(--border-color)]">
                           {stockLevel}
                         </span>
                       </div>
-                      <div className="h-1.5 overflow-hidden rounded-full" style={{ backgroundColor: '#1a2b4a' }}>
+                      <div className="h-1.5 overflow-hidden rounded-full bg-[var(--border-color)]">
                         <div
                           className="h-full rounded-full bg-gradient-to-r from-orange-400 to-orange-500"
                           style={{ width: `${fillWidth}%` }}
@@ -402,7 +401,7 @@ export default function Overview() {
                   );
                 })
               ) : (
-                <div className="rounded-lg border border-dashed px-3 py-6 text-center text-xs text-slate-500" style={{ borderColor: '#1a2b4a', backgroundColor: '#010618' }}>
+                <div className="rounded-lg border border-dashed px-3 py-6 text-center text-xs text-slate-500" style={{ borderColor: 'var(--border-color)', backgroundColor: 'var(--primary-color)' }}>
                   No low stock items.
                 </div>
               )}

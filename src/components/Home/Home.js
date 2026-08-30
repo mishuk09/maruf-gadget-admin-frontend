@@ -133,7 +133,9 @@ const Home = () => {
                 
 
                 <div className="flex w-full h-11 md:flex-row items-stretch gap-3 sm:flex-row sm:items-center sm:justify-end">
-                   <CodeGenerator/>
+                 <div className="  w-full max-w-[300px]">
+                      <CodeGenerator/>
+                 </div>
                     {/* Add Items Button - Icon only on mobile */}
                     <button
                         type="button"
