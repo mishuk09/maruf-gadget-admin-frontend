@@ -11,6 +11,7 @@ import {
   Wallet,
   AlertTriangle,
 } from 'lucide-react';
+import Spin from './utills/Spin';
 
 const formatCurrency = (value) => {
   const numericValue = Number(value || 0);
@@ -286,8 +287,16 @@ export default function Overview() {
 
               <div className="mt-4 sm:mt-6">
                 <p className="text-[10px] font-medium uppercase tracking-[0.14em] text-slate-400 sm:text-xs sm:tracking-[0.16em]">{label}</p>
-                <h2 className="mt-1.5 text-lg font-bold text-white sm:mt-3 sm:text-2xl">{value}</h2>
-                <p className="mt-1 text-xs text-slate-500 sm:mt-2 sm:text-sm">{detail}</p>
+                {loading ? (
+                  <div className="mt-3">
+                    <Spin />
+                  </div>
+                ) : (
+                  <>
+                    <h2 className="mt-1.5 text-lg font-bold text-white sm:mt-3 sm:text-2xl">{value}</h2>
+                    <p className="mt-1 text-xs text-slate-500 sm:mt-2 sm:text-sm">{detail}</p>
+                  </>
+                )}
               </div>
             </div>
           ))}
@@ -306,8 +315,16 @@ export default function Overview() {
 
             <div className="mt-4 sm:mt-6">
               <p className="text-[10px] font-medium uppercase tracking-[0.14em] text-slate-400 sm:text-xs sm:tracking-[0.16em]">Total Extra Sell</p>
-              <h2 className="mt-1.5 text-lg font-bold text-white sm:mt-3 sm:text-2xl">{formatCurrency(stats.extraSellAmount)}</h2>
-              <p className="mt-1 text-xs text-slate-500 sm:mt-2 sm:text-sm">{simpleSell.length} extra sales</p>
+              {loading ? (
+                <div className="mt-3">
+                  <Spin />
+                </div>
+              ) : (
+                <>
+                  <h2 className="mt-1.5 text-lg font-bold text-white sm:mt-3 sm:text-2xl">{formatCurrency(stats.extraSellAmount)}</h2>
+                  <p className="mt-1 text-xs text-slate-500 sm:mt-2 sm:text-sm">{simpleSell.length} extra sales</p>
+                </>
+              )}
             </div>
           </div>
 
@@ -323,8 +340,16 @@ export default function Overview() {
 
             <div className="mt-4 sm:mt-6">
               <p className="text-[10px] font-medium uppercase tracking-[0.14em] text-slate-400 sm:text-xs sm:tracking-[0.16em]">Today Extra Sell</p>
-              <h2 className="mt-1.5 text-lg font-bold text-white sm:mt-3 sm:text-2xl">{formatCurrency(stats.todayExtraSell)}</h2>
-              <p className="mt-1 text-xs text-slate-500 sm:mt-2 sm:text-sm">Today's extra sales</p>
+              {loading ? (
+                <div className="mt-3">
+                  <Spin />
+                </div>
+              ) : (
+                <>
+                  <h2 className="mt-1.5 text-lg font-bold text-white sm:mt-3 sm:text-2xl">{formatCurrency(stats.todayExtraSell)}</h2>
+                  <p className="mt-1 text-xs text-slate-500 sm:mt-2 sm:text-sm">Today's extra sales</p>
+                </>
+              )}
             </div>
           </div>
         </div>
