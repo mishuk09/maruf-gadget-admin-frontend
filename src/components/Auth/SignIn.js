@@ -15,6 +15,18 @@ import { Grid } from '@mui/material';
 
 const defaultTheme = createTheme();
 
+// Axios interceptor to handle 401 unauthorized responses
+axios.interceptors.response.use(
+    response => response,
+    error => {
+        if (error.response?.status === 401) {
+            localStorage.removeItem("token");
+            window.location.href = "/signin";
+        }
+        return Promise.reject(error);
+    }
+);
+
 export default function SignIn() {
 
     const [showAlert, setShowAlert] = React.useState(false);
