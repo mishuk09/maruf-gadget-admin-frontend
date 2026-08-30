@@ -169,6 +169,12 @@ export default function Overview() {
       .filter((item) => isToday(item.createdAt))
       .reduce((sum, item) => sum + parseAmount(item.price), 0);
     const extraSellAmount = simpleSell.reduce((sum, item) => sum + parseAmount(item.price), 0);
+    const thisMonthExtraSell = simpleSell
+      .filter((item) => isSameMonth(item.createdAt))
+      .reduce((sum, item) => sum + parseAmount(item.price), 0);
+    const todayExtraSell = simpleSell
+      .filter((item) => isToday(item.createdAt))
+      .reduce((sum, item) => sum + parseAmount(item.price), 0);
     const stockItem = products.reduce((sum, item) => sum + (Number(item.stock) || 0), 0);
     const totalProductValue = products.reduce(
       (sum, item) => sum + (Number(item.newPrice) || 0),
@@ -176,10 +182,12 @@ export default function Overview() {
     );
 
     return {
-      totalSale,
-      totalSaleThisMonth,
-      todaySell,
+      totalSale: totalSale + extraSellAmount,
+      totalSaleThisMonth: totalSaleThisMonth + thisMonthExtraSell,
+      todaySell: todaySell + todayExtraSell,
       extraSellAmount,
+      thisMonthExtraSell,
+      todayExtraSell,
       stockItem,
       totalProductValue,
     };
@@ -286,20 +294,39 @@ export default function Overview() {
           ))}
         </div>
 
-        <div className="mt-6 sm:mt-8 rounded-lg border p-3 shadow-[0_20px_30px_rgba(1,6,24,0.6)] backdrop-blur-sm sm:p-4 bg-gradient-to-br from-blue-500/10 to-blue-400/5" style={{ backgroundColor: '#0A1225', borderColor: '#1a2b4a' }}>
-          <div className="flex items-center justify-between gap-2 sm:gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-500/20 text-blue-300 ring-1 ring-blue-400/30 sm:h-11 sm:w-11">
-              <TrendingUp size={18} strokeWidth={2.2} className="drop-shadow-sm sm:size-5" />
+        <div className="mt-6 sm:mt-8 grid gap-3 grid-cols-1 sm:gap-4 sm:grid-cols-2">
+          <div className="rounded-lg border p-3 shadow-[0_20px_30px_rgba(1,6,24,0.6)] backdrop-blur-sm sm:p-4 bg-gradient-to-br from-blue-500/10 to-blue-400/5" style={{ backgroundColor: '#0A1225', borderColor: '#1a2b4a' }}>
+            <div className="flex items-center justify-between gap-2 sm:gap-3">
+              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-500/20 text-blue-300 ring-1 ring-blue-400/30 sm:h-11 sm:w-11">
+                <TrendingUp size={18} strokeWidth={2.2} className="drop-shadow-sm sm:size-5" />
+              </div>
+              <span className="rounded-full p-0.5 text-slate-400 sm:p-1" style={{ backgroundColor: '#1a2b4a' }}>
+                <ArrowUpRight size={12} strokeWidth={2.2} className="sm:size-[14px]" />
+              </span>
             </div>
-            <span className="rounded-full p-0.5 text-slate-400 sm:p-1" style={{ backgroundColor: '#1a2b4a' }}>
-              <ArrowUpRight size={12} strokeWidth={2.2} className="sm:size-[14px]" />
-            </span>
+
+            <div className="mt-4 sm:mt-6">
+              <p className="text-[10px] font-medium uppercase tracking-[0.14em] text-slate-400 sm:text-xs sm:tracking-[0.16em]">Total Extra Sell</p>
+              <h2 className="mt-1.5 text-lg font-bold text-white sm:mt-3 sm:text-2xl">{formatCurrency(stats.extraSellAmount)}</h2>
+              <p className="mt-1 text-xs text-slate-500 sm:mt-2 sm:text-sm">{simpleSell.length} extra sales</p>
+            </div>
           </div>
 
-          <div className="mt-4 sm:mt-6">
-            <p className="text-[10px] font-medium uppercase tracking-[0.14em] text-slate-400 sm:text-xs sm:tracking-[0.16em]">Extra Sell</p>
-            <h2 className="mt-1.5 text-lg font-bold text-white sm:mt-3 sm:text-2xl">{formatCurrency(stats.extraSellAmount)}</h2>
-            <p className="mt-1 text-xs text-slate-500 sm:mt-2 sm:text-sm">{simpleSell.length} extra sales</p>
+          <div className="rounded-lg border p-3 shadow-[0_20px_30px_rgba(1,6,24,0.6)] backdrop-blur-sm sm:p-4 bg-gradient-to-br from-purple-500/10 to-purple-400/5" style={{ backgroundColor: '#0A1225', borderColor: '#1a2b4a' }}>
+            <div className="flex items-center justify-between gap-2 sm:gap-3">
+              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-purple-500/20 text-purple-300 ring-1 ring-purple-400/30 sm:h-11 sm:w-11">
+                <ShoppingCart size={18} strokeWidth={2.2} className="drop-shadow-sm sm:size-5" />
+              </div>
+              <span className="rounded-full p-0.5 text-slate-400 sm:p-1" style={{ backgroundColor: '#1a2b4a' }}>
+                <ArrowUpRight size={12} strokeWidth={2.2} className="sm:size-[14px]" />
+              </span>
+            </div>
+
+            <div className="mt-4 sm:mt-6">
+              <p className="text-[10px] font-medium uppercase tracking-[0.14em] text-slate-400 sm:text-xs sm:tracking-[0.16em]">Today Extra Sell</p>
+              <h2 className="mt-1.5 text-lg font-bold text-white sm:mt-3 sm:text-2xl">{formatCurrency(stats.todayExtraSell)}</h2>
+              <p className="mt-1 text-xs text-slate-500 sm:mt-2 sm:text-sm">Today's extra sales</p>
+            </div>
           </div>
         </div>
 
