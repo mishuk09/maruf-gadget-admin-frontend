@@ -97,6 +97,7 @@ export default function Overview() {
   const [simpleSell, setSimpleSell] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [activeTab, setActiveTab] = useState('sell');
 
   useEffect(() => {
     let isMounted = true;
@@ -200,7 +201,12 @@ export default function Overview() {
   }, [sales, products, simpleSell]);
 
   const lowStockItems = useMemo(
-    () => [...products].sort((a, b) => (Number(a.stock) || 0) - (Number(b.stock) || 0)).slice(0, 5),
+    () => [...products]
+      .filter((item) => {
+        const stock = Number(item.stock) || 0;
+        return stock >= 1 && stock <= 5;
+      })
+      .sort((a, b) => (Number(a.stock) || 0) - (Number(b.stock) || 0)),
     [products]
   );
 
@@ -279,7 +285,7 @@ export default function Overview() {
         </div>
 
         {error && (
-          <div className="mb-4 flex items-start gap-2.5 rounded-lg border border-red-400/30 px-3 py-2.5 text-xs text-red-300 sm:mb-6 sm:gap-3 sm:rounded-2xl sm:px-4 sm:py-3 sm:text-sm" style={{ backgroundColor: '#0A1225' }}>
+          <div className="mb-4 flex items-start gap-2.5 rounded-lg border border-red-400/30 px-3 py-2.5 text-xs text-red-300 sm:mb-6 sm:gap-3 sm:rounded-2xl sm:px-4 sm:py-3 sm:text-sm bg-[#0A1225]">
             <AlertTriangle size={16} className="mt-0.5 flex-shrink-0 sm:size-[18px]" />
             <span>{error}</span>
           </div>
@@ -373,35 +379,83 @@ export default function Overview() {
           <div className="rounded-lg border p-4 shadow-sm sm:p-5 md:p-6 text-white bg-[var(--secondary-color)] border-[var(--border-color)]">
             <div className="flex items-center justify-between gap-2 sm:gap-3">
               <div>
-                
-                <h3 className="mt-1 text-lg font-bold text-white sm:mt-2 sm:text-xl">Extra Sells</h3>
+                <h3 className="mt-1 text-lg font-bold text-white sm:mt-2 sm:text-xl">Sales</h3>
               </div>
               <div className="rounded-full p-1.5 text-blue-300 sm:p-2 bg-[var(--border-color)]">
                 <ShoppingCart size={16} className="sm:size-[18px]" />
               </div>
             </div>
 
-            <div className="mt-4 space-y-0 sm:mt-6 divide-y max-h-64 overflow-y-auto scrollbar-thin" style={{ borderColor: 'var(--border-color)' }}>
-              {simpleSell.length > 0 ? (
-                simpleSell.map((item, index) => (
-                  <div
-                    key={item._id || item.code || `extra-sell-${index}`}
-                    className="flex items-center justify-between gap-3 py-3 sm:py-4"
-                  >
-                    <div className="min-w-0 flex-1">
-                      <p className="text-xs font-semibold text-slate-500  truncate sm:text-sm">
-                        {item.productName || item.title || 'Unnamed product'}
-                      </p>
+            {/* Tab Navigation */}
+            <div className="mt-4 sm:mt-6 flex gap-2 border-b border-[var(--border-color)]">
+              <button
+                onClick={() => setActiveTab('sell')}
+                className={`px-3 py-2 text-sm font-medium transition-all ${
+                  activeTab === 'sell'
+                    ? 'text-blue-300 border-b-2 border-blue-300'
+                    : 'text-slate-400 hover:text-slate-300'
+                }`}
+              >
+                Sold Items
+              </button>
+              <button
+                onClick={() => setActiveTab('extra')}
+                className={`px-3 py-2 text-sm font-medium transition-all ${
+                  activeTab === 'extra'
+                    ? 'text-blue-300 border-b-2 border-blue-300'
+                    : 'text-slate-400 hover:text-slate-300'
+                }`}
+              >
+                Extra Sold Items
+              </button>
+            </div>
+
+            {/* Tab Content */}
+            <div className="mt-4 space-y-0 sm:mt-6 divide-y max-h-64 overflow-y-auto scrollbar-thin divide-[var(--border-color)]">
+              {activeTab === 'sell' ? (
+                sales.length > 0 ? (
+                  sales.map((item, index) => (
+                    <div
+                      key={item._id || item.code || `sell-${index}`}
+                      className="flex items-center justify-between gap-3 py-3 sm:py-4"
+                    >
+                      <div className="min-w-0 flex-1">
+                        <p className="text-xs font-semibold text-slate-500 truncate sm:text-sm">
+                          {item.productName || item.title || 'Unnamed product'}
+                        </p>
+                      </div>
+                      <span className="rounded-lg px-2.5 py-1 text-xs font-bold text-blue-300 whitespace-nowrap sm:px-3 sm:py-1.5 sm:text-sm bg-[var(--border-color)]">
+                        {formatCurrency(parseAmount(item.price))}
+                      </span>
                     </div>
-                    <span className="rounded-lg px-2.5 py-1 text-xs font-bold text-green-300 whitespace-nowrap sm:px-3 sm:py-1.5 sm:text-sm bg-[var(--border-color)]">
-                      {formatCurrency(parseAmount(item.price))}
-                    </span>
+                  ))
+                ) : (
+                  <div className="rounded-lg border border-dashed px-3 py-6 text-center text-xs text-slate-500 sm:rounded-2xl sm:px-4 sm:py-8 sm:text-sm border-[var(--border-color)] bg-[var(--primary-color)]">
+                    No sells yet.
                   </div>
-                ))
+                )
               ) : (
-                <div className="rounded-lg border border-dashed px-3 py-6 text-center text-xs text-slate-500 sm:rounded-2xl sm:px-4 sm:py-8 sm:text-sm" style={{ borderColor: 'var(--border-color)', backgroundColor: 'var(--primary-color)' }}>
-                  No extra sells yet.
-                </div>
+                simpleSell.length > 0 ? (
+                  simpleSell.map((item, index) => (
+                    <div
+                      key={item._id || item.code || `extra-sell-${index}`}
+                      className="flex items-center justify-between gap-3 py-3 sm:py-4"
+                    >
+                      <div className="min-w-0 flex-1">
+                        <p className="text-xs font-semibold text-slate-500 truncate sm:text-sm">
+                          {item.productName || item.title || 'Unnamed product'}
+                        </p>
+                      </div>
+                      <span className="rounded-lg px-2.5 py-1 text-xs font-bold text-green-300 whitespace-nowrap sm:px-3 sm:py-1.5 sm:text-sm bg-[var(--border-color)]">
+                        {formatCurrency(parseAmount(item.price))}
+                      </span>
+                    </div>
+                  ))
+                ) : (
+                  <div className="rounded-lg border border-dashed px-3 py-6 text-center text-xs text-slate-500 sm:rounded-2xl sm:px-4 sm:py-8 sm:text-sm border-[var(--border-color)] bg-[var(--primary-color)]">
+                    No extra sells yet.
+                  </div>
+                )
               )}
             </div>
           </div>
@@ -417,14 +471,14 @@ export default function Overview() {
               </div>
             </div>
 
-            <div className="mt-4 space-y-3 sm:mt-6 sm:space-y-3 max-h-64 overflow-y-auto scrollbar-thin">
+            <div className="mt-4 space-y-0 sm:mt-6 max-h-64 overflow-y-auto scrollbar-thin">
               {lowStockItems.length > 0 ? (
                 lowStockItems.map((item) => {
                   const stockLevel = Number(item.stock) || 0;
                   const fillWidth = Math.max((stockLevel / maxInventory) * 100, 12);
 
                   return (
-                    <div key={item.code || item.title || item._id || `${item.category}-stock`}>
+                    <div key={item.code || item.title || item._id || `${item.category}-stock`} className="py-3 sm:py-4 px-0">
                       <div className="mb-1 flex items-center justify-between gap-2">
                         <p className="text-xs font-semibold text-white truncate">{item.title || 'Unnamed product'}</p>
                         <span className="rounded-full px-2 py-0.5 text-[10px] font-bold text-orange-300 whitespace-nowrap bg-[var(--border-color)]">
@@ -441,7 +495,7 @@ export default function Overview() {
                   );
                 })
               ) : (
-                <div className="rounded-lg border border-dashed px-3 py-6 text-center text-xs text-slate-500" style={{ borderColor: 'var(--border-color)', backgroundColor: 'var(--primary-color)' }}>
+                <div className="rounded-lg border border-dashed px-3 py-6 text-center text-xs text-slate-500 border-[var(--border-color)] bg-[var(--primary-color)]">
                   No low stock items.
                 </div>
               )}
