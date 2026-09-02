@@ -178,6 +178,10 @@ export default function Overview() {
       .reduce((sum, item) => sum + parseAmount(item.price), 0);
     const stockItem = products.reduce((sum, item) => sum + (Number(item.stock) || 0), 0);
     const totalProductValue = products.reduce(
+      (sum, item) => sum + (Number(item.oldPrice) || 0),
+      0
+    );
+    const totalSellValue = products.reduce(
       (sum, item) => sum + (Number(item.newPrice) || 0),
       0
     );
@@ -191,6 +195,7 @@ export default function Overview() {
       todayExtraSell,
       stockItem,
       totalProductValue,
+      totalSellValue,
     };
   }, [sales, products, simpleSell]);
 
@@ -205,14 +210,15 @@ export default function Overview() {
   );
 
   const overviewCards = [
-    {
-      label: 'Total Sale',
-      value: formatCurrency(stats.totalSale),
-      detail: `${sales.length} sales recorded`,
-      icon: Wallet,
-      accent: 'from-blue-500/10 to-blue-400/5',
-      iconClass: 'bg-blue-500/20 text-blue-300 ring-1 ring-blue-400/30',
+      {
+      label: 'Today Sell',
+      value: formatCurrency(stats.todaySell),
+      detail: 'Sales from today',
+      icon: ShoppingCart,
+      accent: 'from-purple-500/10 to-purple-400/5',
+      iconClass: 'bg-purple-500/20 text-purple-300 ring-1 ring-purple-400/30',
     },
+   
     {
       label: 'This Month Sale',
       value: formatCurrency(stats.totalSaleThisMonth),
@@ -221,14 +227,15 @@ export default function Overview() {
       accent: 'from-cyan-500/10 to-cyan-400/5',
       iconClass: 'bg-cyan-500/20 text-cyan-300 ring-1 ring-cyan-400/30',
     },
-    {
-      label: 'Today Sell',
-      value: formatCurrency(stats.todaySell),
-      detail: 'Sales from today',
-      icon: ShoppingCart,
-      accent: 'from-purple-500/10 to-purple-400/5',
-      iconClass: 'bg-purple-500/20 text-purple-300 ring-1 ring-purple-400/30',
+     {
+      label: 'Total Sale',
+      value: formatCurrency(stats.totalSale),
+      detail: `${sales.length} sales recorded`,
+      icon: Wallet,
+      accent: 'from-blue-500/10 to-blue-400/5',
+      iconClass: 'bg-blue-500/20 text-blue-300 ring-1 ring-blue-400/30',
     },
+  
     {
       label: 'Stock Item',
       value: stats.stockItem.toLocaleString(),
@@ -244,6 +251,14 @@ export default function Overview() {
       icon: DollarSign,
       accent: 'from-green-500/10 to-green-400/5',
       iconClass: 'bg-green-500/20 text-green-300 ring-1 ring-green-400/30',
+    },
+    {
+      label: 'Total Sell Value',
+      value: formatCurrency(stats.totalSellValue),
+      detail: 'Total sellable inventory',
+      icon: TrendingUp,
+      accent: 'from-indigo-500/10 to-indigo-400/5',
+      iconClass: 'bg-indigo-500/20 text-indigo-300 ring-1 ring-indigo-400/30',
     },
   ];
 
@@ -270,7 +285,7 @@ export default function Overview() {
           </div>
         )}
 
-        <div className="grid gap-3 grid-cols-2 sm:gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+        <div className="grid gap-3 grid-cols-2 sm:gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
           {overviewCards.map(({ label, value, detail, icon: Icon, accent, iconClass }) => (
             <div
               key={label}

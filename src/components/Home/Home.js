@@ -277,30 +277,86 @@ const Home = () => {
             </table>
            </div>
 
-            <div className="pagination flex text-[var(--font-color)] justify-end space-x-2 p-4">
+            <div className="pagination flex text-[var(--font-color)] justify-end items-center space-x-1 p-4">
+                {/* Previous Button */}
                 <button
                     onClick={() => handlePageChange(currentPage - 1)}
                     disabled={currentPage === 1}
-                    className={`px-3 py-1 border  shadow rounded-lg ${currentPage === 1 ? 'opacity-50 cursor-not-allowed ' : 'hover:bg-blue-100'}`}
+                    className={`px-3 py-2 border rounded-lg font-medium transition ${
+                        currentPage === 1
+                            ? 'opacity-50 cursor-not-allowed border-gray-600'
+                            : 'border-blue-600 hover:bg-blue-600 hover:text-white'
+                    }`}
                 >
                     Prev
                 </button>
-                {[...Array(totalPages)].map((_, index) => (
-                    <button
-                        key={index}
-                        onClick={() => handlePageChange(index + 1)}
-                        className={`px-3 py-1 border rounded-lg transition-colors   ${currentPage === index + 1 ? 'bg-red-500 text-white' : 'hover:bg-blue-100'}`}
-                    >
-                        {index + 1}
-                    </button>
-                ))}
+
+                {/* Page Numbers */}
+                <div className="flex space-x-1">
+                    {(() => {
+                        const pages = [];
+
+                        // Always show first 3 pages
+                        for (let i = 1; i <= Math.min(3, totalPages); i++) {
+                            pages.push(
+                                <button
+                                    key={i}
+                                    onClick={() => handlePageChange(i)}
+                                    className={`px-3 py-2 border rounded-lg font-medium transition ${
+                                        currentPage === i
+                                            ? 'bg-red-500 text-white border-red-500'
+                                            : 'border-gray-600 hover:bg-blue-600 hover:text-white'
+                                    }`}
+                                >
+                                    {i}
+                                </button>
+                            );
+                        }
+
+                        // Show ellipsis if there's a gap
+                        if (currentPage > 4) {
+                            pages.push(
+                                <span key="ellipsis" className="px-2 py-2 text-gray-500">
+                                    ...
+                                </span>
+                            );
+                        }
+
+                        // Show current page if it's not in the first 3
+                        if (currentPage > 3 && currentPage <= totalPages) {
+                            pages.push(
+                                <button
+                                    key={currentPage}
+                                    onClick={() => handlePageChange(currentPage)}
+                                    className="px-3 py-2 border rounded-lg font-medium transition bg-red-500 text-white border-red-500"
+                                >
+                                    {currentPage}
+                                </button>
+                            );
+                        }
+
+                        return pages;
+                    })()}
+                </div>
+
+                {/* Next Button */}
                 <button
                     onClick={() => handlePageChange(currentPage + 1)}
                     disabled={currentPage === totalPages}
-                    className={`px-3 py-1 border shadow rounded-lg ${currentPage === totalPages ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-100'}`}
+                    className={`px-3 py-2 border rounded-lg font-medium transition ${
+                        currentPage === totalPages
+                            ? 'opacity-50 cursor-not-allowed border-gray-600'
+                            : 'border-blue-600 hover:bg-blue-600 hover:text-white'
+                    }`}
                 >
                     Next
                 </button>
+
+                {/* Page Info */}
+                <span className="ml-4 text-sm text-gray-400">
+                    Page <span className="font-semibold text-[var(--font-color)]">{currentPage}</span> of{' '}
+                    <span className="font-semibold text-[var(--font-color)]">{totalPages}</span>
+                </span>
             </div>
 
             </div>
